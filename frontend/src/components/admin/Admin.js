@@ -215,6 +215,13 @@ function Admin() {
           >
             <FormattedMessage id="master.lists.page.test.management" />
           </SideNavLink>
+          <SideNavLink
+            data-cy="sampleTypeManagement"
+            renderIcon={Catalog}
+            onClick={handleNavigation(`${path}/SampleTypeManagement`)}
+          >
+            <FormattedMessage id="sidenav.label.admin.sampleTypeManagement" />
+          </SideNavLink>
           <SideNavMenu
             title={intl.formatMessage({ id: "sidenav.label.admin.menu" })}
             renderIcon={TableOfContents}

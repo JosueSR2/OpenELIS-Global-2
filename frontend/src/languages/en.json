@@ -2031,6 +2031,7 @@
   "sidenav.label.admin.organizationmgt": "Organization Management",
   "sidenav.label.admin.pluginFile": "Plugin Files",
   "sidenav.label.admin.program": "Program Entry",
+  "sidenav.label.admin.sampleTypeManagement": "Sample Type Management",
   "sidenav.label.admin.testmgt": "Reflex Tests Configuration",
   "sidenav.label.admin.testmgt.ManageMethod": "Manage Method",
   "sidenav.label.admin.testmgt.ViewtestCatalog": "View Test Catalog",
