@@ -1,44 +1,34 @@
-package org.openelis.middleware;
+package org.openelisglobal.middleware;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+
 import java.util.Arrays;
 import java.util.List;
 
-@Path("/middleware")
+@RestController
+@RequestMapping("/middleware")
 public class MiddlewareController {
 
     private final MiddlewareService service = new MiddlewareService();
 
-    @GET
-    @Path("/test")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String test() throws Exception {
-        return service.testConnection();
+    @GetMapping("/test")
+    public ResponseEntity<String> test() throws Exception {
+        return ResponseEntity.ok(service.testConnection());
     }
 
-    @GET
-    @Path("/results")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<String> getResults() throws Exception {
-        return Arrays.asList(service.getResults());
+    @GetMapping("/results")
+    public ResponseEntity<List<String>> getResults() throws Exception {
+        return ResponseEntity.ok(Arrays.asList(service.getResults()));
     }
 
-    // 👇 ESTE ES EL NUEVO ENDPOINT CORRECTAMENTE DENTRO DE LA CLASE
-    @POST
-    @Path("/receive-result")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response receiveResult(String json) {
+    @PostMapping("/receive-result")
+    public ResponseEntity<String> receiveResult(@RequestBody String json) {
+
         System.out.println("Result received from middleware:");
         System.out.println(json);
 
-        return Response.ok("Received").build();
+        return ResponseEntity.ok("Received");
     }
 }
 
