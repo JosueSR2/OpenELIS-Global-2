@@ -246,58 +246,52 @@ const AnalyserResults = (props) => {
         return (
           <>
             <div>
-              {sampleGroupHasId(row.id) && (
-                <Field name="isAccepted">
-                  {({ field }) => (
-                    <Checkbox
-                      id={"resultList" + row.id + ".isAccepted"}
-                      name={"resultList[?(@.id == " + row.id + ")].isAccepted"}
-                      labelText=""
-                      value={true}
-                      onChange={(e) => handleCheckBox(e, row.id)}
-                    />
-                  )}
-                </Field>
-              )}
-            </div>
+              <Field name="isAccepted">
+                {({ field }) => (
+                  <Checkbox
+                    id={"resultList" + row.id + ".isAccepted"}
+                    name={"resultList[?(@.id == " + row.id + ")].isAccepted"}
+                    labelText=""
+                    value={true}
+                    onChange={(e) => handleCheckBox(e, row.id)}
+                  />
+                )}
+              </Field>
+              </div>
           </>
         );
 
       case "retest":
         return (
           <>
-            {sampleGroupHasId(row.id) && (
-              <Field name="isRejected">
-                {({ field }) => (
-                  <Checkbox
-                    id={"resultList" + row.id + ".isRejected"}
-                    name={"resultList[?(@.id == " + row.id + ")].isRejected"}
-                    labelText=""
-                    value={true}
-                    onChange={(e) => handleCheckBox(e, row.id)}
-                  />
-                )}
-              </Field>
-            )}
+            <Field name="isRejected">
+              {({ field }) => (
+                <Checkbox
+                  id={"resultList" + row.id + ".isRejected"}
+                  name={"resultList[?(@.id == " + row.id + ")].isRejected"}
+                  labelText=""
+                  value={true}
+                  onChange={(e) => handleCheckBox(e, row.id)}
+                />
+              )}
+            </Field>
           </>
         );
 
       case "ignore":
         return (
           <>
-            {sampleGroupHasId(row.id) && (
-              <Field name="isDeleted">
-                {({ field }) => (
-                  <Checkbox
-                    id={"resultList" + row.id + ".isDeleted"}
-                    name={"resultList[?(@.id == " + row.id + ")].isDeleted"}
-                    labelText=""
-                    value={true}
-                    onChange={(e) => handleCheckBox(e, row.id)}
-                  />
-                )}
-              </Field>
-            )}
+            <Field name="isDeleted">
+              {({ field }) => (
+                <Checkbox
+                  id={"resultList" + row.id + ".isDeleted"}
+                  name={"resultList[?(@.id == " + row.id + ")].isDeleted"}
+                  labelText=""
+                  value={true}
+                  onChange={(e) => handleCheckBox(e, row.id)}
+                />
+              )}
+            </Field>
           </>
         );
 
@@ -359,78 +353,76 @@ const AnalyserResults = (props) => {
     }
     return row.result;
   };
-
   return (
     <>
-      {props.results?.resultList?.length > 0 && (
-        <Grid style={{ marginTop: "20px" }} className="gridBoundary">
-          <Column lg={7} md={8} sm={2}>
-            <picture>
-              <img
-                src={config.serverBaseUrl + "/images/nonconforming.gif"}
-                alt="nonconforming"
-                width="25" // Set your desired width
-                height="20" // Set your desired height
-              />
+      <Grid style={{ marginTop: "20px" }} className="gridBoundary">
+        <Column lg={7} md={8} sm={2}>
+          <picture>
+            <img
+              src={config.serverBaseUrl + "/images/nonconforming.gif"}
+              alt="nonconforming"
+              width="25" // Set your desired width
+              height="20" // Set your desired height
+
+            />
             </picture>
-            <b>
-              {" "}
-              <FormattedMessage id="validation.label.nonconform" />
-            </b>
-          </Column>
-          <Column lg={3} md={2} sm={4}>
-            <Checkbox
-              id={"saveallresults"}
-              name={"autochecks"}
-              labelText={intl.formatMessage({ id: "validation.accept.all" })}
-              onChange={(e) => {
-                const nomalResults = props.results.resultList;
-                nomalResults.forEach((result) => {
-                  const checkbox = document.getElementById(
-                    "resultList" + result.id + ".isAccepted",
-                  );
-                  checkbox.checked = e.target.checked;
-                  handleAutomatedCheck(e.target.checked, checkbox.name);
-                });
-              }}
-            />
-          </Column>
-          <Column lg={3} md={2} sm={4}>
-            <Checkbox
-              id={"retestalltests"}
-              name={"autochecks"}
-              labelText={intl.formatMessage({ id: "validation.reject.all" })}
-              onChange={(e) => {
-                const nomalResults = props.results.resultList;
-                nomalResults.forEach((result) => {
-                  const checkbox = document.getElementById(
-                    "resultList" + result.id + ".isRejected",
-                  );
-                  checkbox.checked = e.target.checked;
-                  handleAutomatedCheck(e.target.checked, checkbox.name);
-                });
-              }}
-            />
-          </Column>
-          <Column lg={3} md={2} sm={4}>
-            <Checkbox
-              id={"ignorealltests"}
-              name={"autochecks"}
-              labelText={intl.formatMessage({ id: "validation.ignore.all" })}
-              onChange={(e) => {
-                const nomalResults = props.results.resultList;
-                nomalResults.forEach((result) => {
-                  const checkbox = document.getElementById(
-                    "resultList" + result.id + ".isDeleted",
-                  );
-                  checkbox.checked = e.target.checked;
-                  handleAutomatedCheck(e.target.checked, checkbox.name);
-                });
-              }}
-            />
-          </Column>
-        </Grid>
-      )}
+          <b>
+            {" "}
+            <FormattedMessage id="validation.label.nonconform" />
+          </b>
+        </Column>
+        <Column lg={3} md={2} sm={4}>
+          <Checkbox
+            id={"saveallresults"}
+            name={"autochecks"}
+            labelText={intl.formatMessage({ id: "validation.accept.all" })}
+            onChange={(e) => {
+              const nomalResults = props.results.resultList;
+              nomalResults.forEach((result) => {
+                const checkbox = document.getElementById(
+                  "resultList" + result.id + ".isAccepted",
+                );
+                checkbox.checked = e.target.checked;
+                handleAutomatedCheck(e.target.checked, checkbox.name);
+              });
+            }}
+          />
+        </Column>
+        <Column lg={3} md={2} sm={4}>
+          <Checkbox
+            id={"retestalltests"}
+            name={"autochecks"}
+            labelText={intl.formatMessage({ id: "validation.reject.all" })}
+            onChange={(e) => {
+              const nomalResults = props.results.resultList;
+              nomalResults.forEach((result) => {
+                const checkbox = document.getElementById(
+                  "resultList" + result.id + ".isRejected",
+                );
+                checkbox.checked = e.target.checked;
+                handleAutomatedCheck(e.target.checked, checkbox.name);
+              });
+            }}
+          />
+        </Column>
+        <Column lg={3} md={2} sm={4}>
+          <Checkbox
+            id={"ignorealltests"}
+            name={"autochecks"}
+            labelText={intl.formatMessage({ id: "validation.ignore.all" })}
+            onChange={(e) => {
+              const nomalResults = props.results.resultList;
+              nomalResults.forEach((result) => {
+                const checkbox = document.getElementById(
+                  "resultList" + result.id + ".isDeleted",
+                );
+                checkbox.checked = e.target.checked;
+                handleAutomatedCheck(e.target.checked, checkbox.name);
+              });
+            }}
+          />
+        </Column>
+      </Grid>
       <Formik
         initialValues={ValidationSearchFormValues}
         //validationSchema={}

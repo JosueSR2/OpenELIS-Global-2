@@ -45,6 +45,26 @@
   CD3PCT is accomplished in the plugin jar (java class
   AquiosAnalyzerImplementation.java)
 
+  ### Secure OpenELIS ↔ Middleware connection
+
+The middleware endpoints used by `/middleware/*` in OpenELIS are now
+configuration-driven and HTTPS-first. Configure these properties in
+`volume/properties/common.properties`:
+
+```properties
+org.openelisglobal.middleware.base-url=https://<middleware-host>:5284/api/analyzer/
+org.openelisglobal.middleware.allow-http=false
+org.openelisglobal.middleware.api-key=<shared-secret-if-required>
+org.openelisglobal.middleware.timeout-seconds=30
+```
+
+Notes:
+- Keep `allow-http=false` for secure environments.
+- Use `allow-http=true` only for local development scenarios where TLS is not available.
+- If the middleware uses a private CA, import its certificate into
+  `/etc/openelis-global/truststore` so Java can validate the TLS certificate.
+
+
 ### Executing the Workflow (the workflow stated here is for getting a result from the Aquios Analyzer)
 
 1. Create an order in OE that has the same sample ID as the analyzer and
