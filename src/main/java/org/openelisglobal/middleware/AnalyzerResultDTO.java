@@ -1,9 +1,14 @@
 package org.openelisglobal.middleware;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AnalyzerResultDTO {
 
+    private String analyzerId;
     private String accessionNumber;
     private String testCode;
+    private String testName;
     private String resultValue;
     private String units;
     private String status;
@@ -12,6 +17,14 @@ public class AnalyzerResultDTO {
 
     public AnalyzerResultDTO() {
         // Constructor vacío requerido por Jackson
+    }
+
+    public String getAnalyzerId() {
+        return analyzerId;
+    }
+
+    public void setAnalyzerId(String analyzerId) {
+        this.analyzerId = analyzerId;
     }
 
     public String getAccessionNumber() {
@@ -28,6 +41,14 @@ public class AnalyzerResultDTO {
 
     public void setTestCode(String testCode) {
         this.testCode = testCode;
+    }
+
+    public String getTestName() {
+        return testName;
+    }
+
+    public void setTestName(String testName) {
+        this.testName = testName;
     }
 
     public String getResultValue() {
@@ -73,8 +94,10 @@ public class AnalyzerResultDTO {
     @Override
     public String toString() {
         return "AnalyzerResultDTO{" +
-                "accessionNumber='" + accessionNumber + '\'' +
+                "analyzerId='" + analyzerId + '\'' +
+                ", accessionNumber='" + accessionNumber + '\'' +
                 ", testCode='" + testCode + '\'' +
+                ", testName='" + testName + '\'' +
                 ", resultValue='" + resultValue + '\'' +
                 ", units='" + units + '\'' +
                 ", status='" + status + '\'' +
