@@ -16,13 +16,27 @@ export const getFromOpenElisServer = (endPoint, callback, signal = null) => {
       // if (response.url.includes("LoginPage")) {
       //     throw "No Login Session";
       // }
+      // Check for authentication errors (401, 403)
+      if (response.status === 401 || response.status === 403) {
+        console.warn(
+          `Authentication error ${response.status} - returning undefined`,
+        );
+        callback(undefined);
+        return;
+      }
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.indexOf("application/json") !== -1) {
-        return response.json().then((jsonResp) => {
-          callback(jsonResp);
-        });
+        return response
+          .json()
+          .then((jsonResp) => {
+            callback(jsonResp);
+          })
+          .catch((error) => {
+            console.error("JSON parse error in getFromOpenElisServer:", error);
+            callback(undefined);
+          });
       } else {
-        callback();
+        callback(undefined);
       }
     })
     .catch((error) => {
@@ -180,7 +194,12 @@ export const getFromOpenElisServerSync = (endPoint, callback) => {
   // if (request.response.url.includes("LoginPage")) {
   //     throw "No Login Session";
   // }
-  return callback(JSON.parse(request.response));
+  try {
+    return callback(JSON.parse(request.response));
+  } catch (error) {
+    console.error("Error parsing JSON in getFromOpenElisServerSync:", error);
+    return callback(null);
+  }
 };
 
 export const postToOpenElisServerForBlob = (

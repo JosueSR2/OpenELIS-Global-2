@@ -95,7 +95,10 @@ public class SecurityConfig {
     // pages that have special security constraints
     public static final String[] OPEN_PAGES = { "/pluginServlet/**", "/ChangePasswordLogin",
             "/UpdateLoginChangePassword", "/health/**", "/rest/open-configuration-properties", "/docs/UserManual",
-            "/rest/site-branding/**", "/middleware/**" };
+            "/rest/site-branding/**", "/middleware/**", "/analyzer/astm", "/analyzer/hl7",
+            "/api/OpenELIS-Global/analyzer/astm", "/api/OpenELIS-Global/analyzer/hl7", "/session",
+            "/api/OpenELIS-Global/rest/open-configuration-properties", "/api/OpenELIS-Global/rest/site-branding/**",
+            "/api/OpenELIS-Global/session" };
     public static final String[] LOGIN_PAGES = { "/LoginPage", "/ValidateLogin", "/session" };
 
     public static final String[] AUTH_OPEN_PAGES = { "/Home", "/Dashboard", "/Logout", "/MasterListsPage",
@@ -409,6 +412,7 @@ public class SecurityConfig {
                 // allow all users to access these pages no matter authentication status
                 .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.INCLUDE, DispatcherType.ERROR)
                 .permitAll().requestMatchers(LOGIN_PAGES).permitAll().requestMatchers(RESOURCE_PAGES).permitAll()
+                .requestMatchers(OPEN_PAGES).permitAll()
                 // ensure all other requests are authenticated
                 .anyRequest().authenticated()
 

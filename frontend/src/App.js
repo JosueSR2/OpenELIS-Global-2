@@ -106,21 +106,31 @@ export default function App() {
           //includes the browser sessionId in the Header for Authentication on the backend server
           { credentials: "include" },
         );
-        if (response.status === 200) {
-          const jsonResp = await response.json();
-          console.debug(JSON.stringify(jsonResp));
-          if (jsonResp.authenticated) {
-            localStorage.setItem("CSRF", jsonResp.csrf);
+        // Accept both 200 and other 2xx/3xx success codes
+        if (response.ok || response.status === 401 || response.status === 403) {
+          try {
+            const jsonResp = await response.json();
+            console.debug(JSON.stringify(jsonResp));
+            if (jsonResp.authenticated) {
+              localStorage.setItem("CSRF", jsonResp.csrf);
+            }
+            if (
+              !Object.keys(jsonResp).every(
+                (key) => jsonResp[key] === userSessionDetails[key],
+              )
+            ) {
+              setUserSessionDetails(jsonResp);
+            }
+            setErrorLoadingSessionDetails(false);
+            return jsonResp;
+          } catch (parseError) {
+            // If response is not JSON (e.g., HTML error page), treat as unauthenticated
+            console.warn("Response is not JSON, treating as unauthenticated");
+            const defaultSession = { authenticated: false, sessionId: null };
+            setUserSessionDetails(defaultSession);
+            setErrorLoadingSessionDetails(false);
+            return defaultSession;
           }
-          if (
-            !Object.keys(jsonResp).every(
-              (key) => jsonResp[key] === userSessionDetails[key],
-            )
-          ) {
-            setUserSessionDetails(jsonResp);
-          }
-          setErrorLoadingSessionDetails(false);
-          return jsonResp;
         } else {
           throw new Error(
             "Did not receive a successful response from the backend while retrieving user session details",
@@ -128,22 +138,12 @@ export default function App() {
         }
       } catch (error) {
         console.error(error);
-        if (counter === 10) {
-          const options = {
-            title: "System Error",
-            message: "Error : " + error.message,
-            buttons: [
-              {
-                label: "OK",
-                onClick: () => {
-                  window.location.href = window.location.origin;
-                },
-              },
-            ],
-            closeOnClickOutside: false,
-            closeOnEscape: false,
-          };
-          confirmAlert(options);
+        if (counter === 9) {
+          // Use default unauthenticated session instead of showing error
+          const defaultSession = { authenticated: false, sessionId: null };
+          setUserSessionDetails(defaultSession);
+          setErrorLoadingSessionDetails(false);
+          return defaultSession;
         }
       }
       ++counter;

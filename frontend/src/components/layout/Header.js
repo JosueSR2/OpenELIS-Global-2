@@ -97,6 +97,87 @@ function OEHeader({
     window.scrollTo(0, scrollRef.current);
   }, []);
 
+  // determine if we are inside the analyzers workflow; this is the
+  // portion of the app that should present the "minimalist" look and
+  // feel requested by the user.  We only look at the client-side route
+  // prefix, which is stable during navigation.
+  const isAnalyzerContext =
+    location.pathname.startsWith("/analyzers") ||
+    location.pathname.startsWith("/AnalyzerManagement");
+
+  // --- minimal header variant ------------------------------------------------
+  // A lightweight header with logo + user/language controls.  It omits the
+  // search box, notification bell, side‑nav toggle, help menu, etc.  This
+  // gives an uncluttered workspace when users are performing analyzer work.
+  if (isAnalyzerContext) {
+    return (
+      <Header aria-label="OpenELIS" role="banner">
+        <HeaderName href="/" prefix="">
+          <span id="header-logo">{logo()}</span>
+        </HeaderName>
+        <HeaderGlobalBar>
+          {/* user/logout action */}
+          <HeaderGlobalAction
+            id="user-Icon"
+            aria-label={intl.formatMessage({ id: "header.label.logout" })}
+            onClick={logout}
+          >
+            <Logout size={20} />
+          </HeaderGlobalAction>
+          {/* language switcher opens the same user panel used elsewhere */}
+          <HeaderGlobalAction
+            aria-label={intl.formatMessage({ id: "header.label.selectlocale" })}
+            onClick={() => handlePanelToggle(switchCollapsed ? "user" : "")}
+            ref={userSwitchRef}
+          >
+            <Language size={20} />
+          </HeaderGlobalAction>
+        </HeaderGlobalBar>
+
+        {/* reuse the existing HeaderPanel for logout + language select */}
+        <HeaderPanel
+          aria-label="Header Panel"
+          expanded={!switchCollapsed}
+          className="headerPanel"
+          ref={headerPanelRef}
+        >
+          <ul>
+            <li
+              data-cy="logOut"
+              className="userDetails clickableUserDetails"
+              onClick={logout}
+            >
+              <Logout style={{ marginRight: "3px" }} />
+              <FormattedMessage id="header.label.logout" />
+            </li>
+            <li className="userDetails">
+              <Theme theme="white">
+                <Select
+                  id="selector"
+                  name="selectLocale"
+                  defaultValue={localStorage.getItem("locale") || "en"}
+                  onChange={(evt) => {
+                    const newLang = evt.target.value;
+                    onChangeLanguage(newLang);
+                  }}
+                >
+                  {Object.keys(languages).map((lang) => (
+                    <SelectItem
+                      key={lang}
+                      value={lang}
+                      text={languages[lang].label}
+                    />
+                  ))}
+                </Select>
+              </Theme>
+            </li>
+          </ul>
+        </HeaderPanel>
+      </Header>
+    );
+  }
+  // --- end minimal header ----------------------------------------------------
+
   useEffect(() => {
     if (!userSessionDetails.authenticated) {
       return;

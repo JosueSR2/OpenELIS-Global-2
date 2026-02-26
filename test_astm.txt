@@ -1,0 +1,5 @@
+H|\^&|||Analyzer-ASTM|||||P|1
+P|1
+O|1|12345||^^^GLU^Glucose|||||||||N||||||||||F
+R|1|^^^GLU^Glucose|5.6|mmol/L|||||F
+L|1|N

@@ -396,51 +396,58 @@ public class DisplayListController extends BaseRestController {
     @ResponseBody
     private Map<String, Object> getOpenConfigurationProperties() {
         Map<String, Object> configs = new HashMap<>();
-        configs.put(Property.restrictFreeTextProviderEntry.toString(),
-                ConfigurationProperties.getInstance().getPropertyValue(Property.restrictFreeTextProviderEntry));
-        configs.put(Property.restrictFreeTextRefSiteEntry.toString(),
-                ConfigurationProperties.getInstance().getPropertyValue(Property.restrictFreeTextRefSiteEntry));
-        configs.put(Property.PHONE_FORMAT.toString(),
-                ConfigurationProperties.getInstance().getPropertyValue(Property.PHONE_FORMAT));
-        configs.put(Property.releaseNumber.toString(),
-                ConfigurationProperties.getInstance().getPropertyValue(Property.releaseNumber));
-        configs.put(Property.ACCESSION_NUMBER_VALIDATE.toString(),
-                ConfigurationProperties.getInstance().getPropertyValue(Property.ACCESSION_NUMBER_VALIDATE));
-        configs.put(Property.AUTOFILL_COLLECTION_DATE.toString(),
-                ConfigurationProperties.getInstance().getPropertyValue(Property.AUTOFILL_COLLECTION_DATE));
-        configs.put(Property.ACCEPT_EXTERNAL_ORDERS.toString(),
-                ConfigurationProperties.getInstance().getPropertyValue(Property.ACCEPT_EXTERNAL_ORDERS));
-        configs.put("currentDateAsText", DateUtil.getCurrentDateAsText());
-        configs.put("currentTimeAsText", DateUtil.getCurrentTimeAsText());
-        configs.put(Property.BANNER_TEXT.toString(), localizationService
-                .getLocalizedValueById(ConfigurationProperties.getInstance().getPropertyValue(Property.BANNER_TEXT)));
-        SiteInformation studyManagementTab = siteInformationService.getSiteInformationByName("Study Management tab");
-        configs.put("studyManagementTab", studyManagementTab != null ? studyManagementTab.getValue() : "false");
-        configs.put("useSaml", useSAML ? "true" : "false");
-        configs.put("useSamlLoginPage", useSamlLoginPage ? "true" : "false");
-        configs.put("useOauth", useOAUTH ? "true" : "false");
-        if (useOAUTH) {
-            ResolvableType type = ResolvableType.forInstance(clientRegistrationRepository).as(Iterable.class);
-            if (type != ResolvableType.NONE && ClientRegistration.class.isAssignableFrom(type.resolveGenerics()[0])) {
-                @SuppressWarnings("unchecked")
-                Iterable<ClientRegistration> clientRegistrations = (Iterable<ClientRegistration>) clientRegistrationRepository;
-                clientRegistrations.forEach(registration -> oauth2AuthenticationUrls.put(registration.getClientName(),
-                        authorizationRequestBaseUri + "/" + registration.getRegistrationId()));
+        try {
+            configs.put(Property.restrictFreeTextProviderEntry.toString(),
+                    ConfigurationProperties.getInstance().getPropertyValue(Property.restrictFreeTextProviderEntry));
+            configs.put(Property.restrictFreeTextRefSiteEntry.toString(),
+                    ConfigurationProperties.getInstance().getPropertyValue(Property.restrictFreeTextRefSiteEntry));
+            configs.put(Property.PHONE_FORMAT.toString(),
+                    ConfigurationProperties.getInstance().getPropertyValue(Property.PHONE_FORMAT));
+            configs.put(Property.releaseNumber.toString(),
+                    ConfigurationProperties.getInstance().getPropertyValue(Property.releaseNumber));
+            configs.put(Property.ACCESSION_NUMBER_VALIDATE.toString(),
+                    ConfigurationProperties.getInstance().getPropertyValue(Property.ACCESSION_NUMBER_VALIDATE));
+            configs.put(Property.AUTOFILL_COLLECTION_DATE.toString(),
+                    ConfigurationProperties.getInstance().getPropertyValue(Property.AUTOFILL_COLLECTION_DATE));
+            configs.put(Property.ACCEPT_EXTERNAL_ORDERS.toString(),
+                    ConfigurationProperties.getInstance().getPropertyValue(Property.ACCEPT_EXTERNAL_ORDERS));
+            configs.put("currentDateAsText", DateUtil.getCurrentDateAsText());
+            configs.put("currentTimeAsText", DateUtil.getCurrentTimeAsText());
+            configs.put(Property.BANNER_TEXT.toString(), localizationService
+                    .getLocalizedValueById(ConfigurationProperties.getInstance().getPropertyValue(Property.BANNER_TEXT)));
+            SiteInformation studyManagementTab = siteInformationService.getSiteInformationByName("Study Management tab");
+            configs.put("studyManagementTab", studyManagementTab != null ? studyManagementTab.getValue() : "false");
+            configs.put("useSaml", useSAML ? "true" : "false");
+            configs.put("useSamlLoginPage", useSamlLoginPage ? "true" : "false");
+            configs.put("useOauth", useOAUTH ? "true" : "false");
+            if (useOAUTH) {
+                ResolvableType type = ResolvableType.forInstance(clientRegistrationRepository).as(Iterable.class);
+                if (type != ResolvableType.NONE && ClientRegistration.class.isAssignableFrom(type.resolveGenerics()[0])) {
+                    @SuppressWarnings("unchecked")
+                    Iterable<ClientRegistration> clientRegistrations = (Iterable<ClientRegistration>) clientRegistrationRepository;
+                    clientRegistrations.forEach(registration -> oauth2AuthenticationUrls.put(registration.getClientName(),
+                            authorizationRequestBaseUri + "/" + registration.getRegistrationId()));
+                }
+                configs.put("oauthUrls",
+                        oauth2AuthenticationUrls.entrySet().stream().map(e -> new KeyValuePair(e.getKey(), e.getValue())));
             }
-            configs.put("oauthUrls",
-                    oauth2AuthenticationUrls.entrySet().stream().map(e -> new KeyValuePair(e.getKey(), e.getValue())));
-        }
-        configs.put("useFormLogin", useFormLogin ? "true" : "false");
-        configs.put(Property.SUBJECT_ON_WORKPLAN.toString(),
-                ConfigurationProperties.getInstance().getPropertyValue(Property.SUBJECT_ON_WORKPLAN));
-        configs.put(Property.NEXT_VISIT_DATE_ON_WORKPLAN.toString(),
-                ConfigurationProperties.getInstance().getPropertyValue(Property.NEXT_VISIT_DATE_ON_WORKPLAN));
-        configs.put(Property.configurationName.toString(),
-                ConfigurationProperties.getInstance().getPropertyValue(Property.configurationName));
-        configs.put(Property.REQUIRE_LAB_UNIT_AT_LOGIN.toString(),
+            configs.put("useFormLogin", useFormLogin ? "true" : "false");
+            configs.put(Property.SUBJECT_ON_WORKPLAN.toString(),
+                    ConfigurationProperties.getInstance().getPropertyValue(Property.SUBJECT_ON_WORKPLAN));
+            configs.put(Property.NEXT_VISIT_DATE_ON_WORKPLAN.toString(),
+                    ConfigurationProperties.getInstance().getPropertyValue(Property.NEXT_VISIT_DATE_ON_WORKPLAN));
+            configs.put(Property.configurationName.toString(),
+                    ConfigurationProperties.getInstance().getPropertyValue(Property.configurationName));
+            configs.put(Property.REQUIRE_LAB_UNIT_AT_LOGIN.toString(),
                 ConfigurationProperties.getInstance().getPropertyValue(Property.REQUIRE_LAB_UNIT_AT_LOGIN));
-        configs.put(Property.ENABLE_CLIENT_REGISTRY.toString(),
-                ConfigurationProperties.getInstance().getPropertyValue(Property.ENABLE_CLIENT_REGISTRY));
+            configs.put(Property.ENABLE_CLIENT_REGISTRY.toString(),
+                    ConfigurationProperties.getInstance().getPropertyValue(Property.ENABLE_CLIENT_REGISTRY));
+        } catch (Exception e) {
+            // Return empty config map on error to ensure valid JSON response
+            System.err.println("Error in getOpenConfigurationProperties: " + e.getMessage());
+            e.printStackTrace();
+            configs.put("error", "Configuration loading error");
+        }
         return configs;
     }
 

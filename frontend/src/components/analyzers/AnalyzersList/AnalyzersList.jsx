@@ -63,6 +63,9 @@ const AnalyzersList = () => {
     open: false,
     analyzer: null,
   });
+  // show/hide advanced filters
+  // show/hide advanced filters (start hidden for minimal view)
+  const [showFilters, setShowFilters] = useState(false);
 
   const loadAnalyzers = useCallback((searchFilters = {}) => {
     setLoading(true);
@@ -239,17 +242,28 @@ const AnalyzersList = () => {
             subtitle={intl.formatMessage({ id: "analyzer.list.subtitle" })}
           />
         </div>
-        <Button
-          kind="primary"
-          renderIcon={Add}
-          data-testid="add-analyzer-button"
-          onClick={() => {
-            setSelectedAnalyzer(null);
-            setAnalyzerFormOpen(true);
-          }}
-        >
-          {intl.formatMessage({ id: "analyzer.action.add" })}
-        </Button>
+        <div className="analyzers-list-header-actions">
+          <Button
+            kind="secondary"
+            data-testid="toggle-filters-button"
+            onClick={() => setShowFilters((prev) => !prev)}
+          >
+            {showFilters
+              ? intl.formatMessage({ id: "button.hide.filters" })
+              : intl.formatMessage({ id: "button.show.filters" })}
+          </Button>
+          <Button
+            kind="primary"
+            renderIcon={Add}
+            data-testid="add-analyzer-button"
+            onClick={() => {
+              setSelectedAnalyzer(null);
+              setAnalyzerFormOpen(true);
+            }}
+          >
+            {intl.formatMessage({ id: "analyzer.action.add" })}
+          </Button>
+        </div>
       </div>
 
       <Grid className="analyzers-list-stats" data-testid="analyzers-list-stats">
@@ -309,89 +323,91 @@ const AnalyzersList = () => {
             />
           </Column>
         </Grid>
-        <Grid>
-          <Column lg={4} md={4} sm={4}>
-            <Dropdown
-              id="status-filter"
-              data-testid="analyzer-status-filter"
-              titleText={intl.formatMessage({
-                id: "analyzer.filter.status.label",
-              })}
-              label={intl.formatMessage({
-                id: "analyzer.filter.status.label",
-              })}
-              items={[
-                {
-                  id: "",
-                  text: intl.formatMessage({
-                    id: "analyzer.filter.status.all",
-                  }),
-                },
-                {
-                  id: "INACTIVE",
-                  text: intl.formatMessage({
-                    id: "analyzer.status.inactive",
-                  }),
-                },
-                {
-                  id: "SETUP",
-                  text: intl.formatMessage({
-                    id: "analyzer.status.setup",
-                  }),
-                },
-                {
-                  id: "VALIDATION",
-                  text: intl.formatMessage({
-                    id: "analyzer.status.validation",
-                  }),
-                },
-                {
-                  id: "ACTIVE",
-                  text: intl.formatMessage({
-                    id: "analyzer.status.active",
-                  }),
-                },
-                {
-                  id: "ERROR_PENDING",
-                  text: intl.formatMessage({
-                    id: "analyzer.status.error_pending",
-                  }),
-                },
-                {
-                  id: "OFFLINE",
-                  text: intl.formatMessage({
-                    id: "analyzer.status.offline",
-                  }),
-                },
-              ]}
-              itemToString={(item) => (item ? item.text : "")}
-              selectedItem={
-                filters.status
-                  ? {
-                      id: filters.status,
-                      text: intl.formatMessage({
-                        id:
-                          filters.status === "ERROR_PENDING"
-                            ? "analyzer.status.error_pending"
-                            : `analyzer.status.${filters.status.toLowerCase()}`,
-                      }),
-                    }
-                  : {
-                      id: "",
-                      text: intl.formatMessage({
-                        id: "analyzer.filter.status.all",
-                      }),
-                    }
-              }
-              onChange={({ selectedItem }) => {
-                if (selectedItem) {
-                  handleFilterChange("status", selectedItem.id || "");
+        {showFilters && (
+          <Grid>
+            <Column lg={4} md={4} sm={4}>
+              <Dropdown
+                id="status-filter"
+                data-testid="analyzer-status-filter"
+                titleText={intl.formatMessage({
+                  id: "analyzer.filter.status.label",
+                })}
+                label={intl.formatMessage({
+                  id: "analyzer.filter.status.label",
+                })}
+                items={[
+                  {
+                    id: "",
+                    text: intl.formatMessage({
+                      id: "analyzer.filter.status.all",
+                    }),
+                  },
+                  {
+                    id: "INACTIVE",
+                    text: intl.formatMessage({
+                      id: "analyzer.status.inactive",
+                    }),
+                  },
+                  {
+                    id: "SETUP",
+                    text: intl.formatMessage({
+                      id: "analyzer.status.setup",
+                    }),
+                  },
+                  {
+                    id: "VALIDATION",
+                    text: intl.formatMessage({
+                      id: "analyzer.status.validation",
+                    }),
+                  },
+                  {
+                    id: "ACTIVE",
+                    text: intl.formatMessage({
+                      id: "analyzer.status.active",
+                    }),
+                  },
+                  {
+                    id: "ERROR_PENDING",
+                    text: intl.formatMessage({
+                      id: "analyzer.status.error_pending",
+                    }),
+                  },
+                  {
+                    id: "OFFLINE",
+                    text: intl.formatMessage({
+                      id: "analyzer.status.offline",
+                    }),
+                  },
+                ]}
+                itemToString={(item) => (item ? item.text : "")}
+                selectedItem={
+                  filters.status
+                    ? {
+                        id: filters.status,
+                        text: intl.formatMessage({
+                          id:
+                            filters.status === "ERROR_PENDING"
+                              ? "analyzer.status.error_pending"
+                              : `analyzer.status.${filters.status.toLowerCase()}`,
+                        }),
+                      }
+                    : {
+                        id: "",
+                        text: intl.formatMessage({
+                          id: "analyzer.filter.status.all",
+                        }),
+                      }
                 }
-              }}
-              size="lg"
-            />
-          </Column>
-        </Grid>
+                onChange={({ selectedItem }) => {
+                  if (selectedItem) {
+                    handleFilterChange("status", selectedItem.id || "");
+                  }
+                }}
+                size="lg"
+              />
+            </Column>
+          </Grid>
+        )}
       </div>
 
       <Grid>

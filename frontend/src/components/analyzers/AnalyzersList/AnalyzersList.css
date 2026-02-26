@@ -24,6 +24,12 @@
   gap: 1rem;
 }
 
+.analyzers-list-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .analyzers-list-header-title {
   flex: 1;
   min-width: 0; /* Allow title to shrink if needed */

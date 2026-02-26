@@ -136,29 +136,42 @@ public class LoginPageController extends BaseController {
     @GetMapping(value = "/session", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public UserSession getSesssionDetails(HttpServletRequest request, CsrfToken token) {
-        boolean authenticated = !userModuleService.isSessionExpired(request);
         UserSession session = new UserSession();
-        session.setAuthenticated(authenticated);
+        session.setAuthenticated(false);
         session.setSessionId(request.getSession().getId());
-        if (authenticated) {
-            SystemUser user = systemUserService.get(getSysUserId(request));
-            setLoginMethod(request, session);
-            session.setUserId(user.getId());
-            session.setLoginName(user.getLoginName());
-            session.setFirstName(user.getFirstName());
-            session.setLastName(user.getLastName());
-            if (token != null) {
-                session.setCSRF(token.getToken());
-            }
-            UserSessionData usd = (UserSessionData) request.getSession().getAttribute(USER_SESSION_DATA);
-            if (usd.getLoginLabUnit() != 0) {
-                TestSection testSection = testSectionService.getTestSectionById(String.valueOf(usd.getLoginLabUnit()));
-                if (testSection != null) {
-                    session.setLoginLabUnit(testSection.getLocalizedName());
+        
+        try {
+            boolean authenticated = !userModuleService.isSessionExpired(request);
+            session.setAuthenticated(authenticated);
+            
+            if (authenticated) {
+                SystemUser user = systemUserService.get(getSysUserId(request));
+                if (user != null) {
+                    setLoginMethod(request, session);
+                    session.setUserId(user.getId());
+                    session.setLoginName(user.getLoginName());
+                    session.setFirstName(user.getFirstName());
+                    session.setLastName(user.getLastName());
+                    if (token != null) {
+                        session.setCSRF(token.getToken());
+                    }
+                    UserSessionData usd = (UserSessionData) request.getSession().getAttribute(USER_SESSION_DATA);
+                    if (usd != null && usd.getLoginLabUnit() != 0) {
+                        TestSection testSection = testSectionService.getTestSectionById(String.valueOf(usd.getLoginLabUnit()));
+                        if (testSection != null) {
+                            session.setLoginLabUnit(testSection.getLocalizedName());
+                        }
+                    }
+                    setLabunitRolesForExistingUser(request, session);
                 }
             }
-            setLabunitRolesForExistingUser(request, session);
+        } catch (Exception e) {
+            // Ensure we always return valid session JSON even if there's an error
+            System.err.println("Error in getSesssionDetails: " + e.getMessage());
+            e.printStackTrace();
+            session.setAuthenticated(false);
         }
+        
         return session;
     }
 

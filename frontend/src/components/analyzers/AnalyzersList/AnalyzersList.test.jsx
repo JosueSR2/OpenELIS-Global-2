@@ -185,6 +185,35 @@ describe("AnalyzersList", () => {
     expect(name2.textContent).toContain("Chemistry Analyzer 1");
   });
 
+  test("testToggleFiltersButton_ShowsAndHidesFilterSection", async () => {
+    // Arrange: component renders with no analyzers (filters hidden by default)
+    getAnalyzers.mockImplementation((filters, callback) => {
+      act(() => {
+        callback({ analyzers: [] });
+      });
+    });
+
+    act(() => {
+      renderWithIntl(<AnalyzersList />);
+    });
+
+    const toggle = await screen.findByTestId("toggle-filters-button");
+    // initially the status filter dropdown should not be in the document
+    expect(screen.queryByTestId("analyzer-status-filter")).toBeNull();
+
+    // click to reveal filters
+    await userEvent.click(toggle);
+    expect(
+      await screen.findByTestId("analyzer-status-filter"),
+    ).toBeInTheDocument();
+
+    // click again to hide
+    await userEvent.click(toggle);
+    await waitFor(() => {
+      expect(screen.queryByTestId("analyzer-status-filter")).toBeNull();
+    });
+  });
+
   /**
    * Test: Search analyzers with query filters results
    *
@@ -372,7 +401,10 @@ describe("AnalyzersList", () => {
     await screen.findByTestId("analyzer-name-1", {}, { timeout: 3000 });
 
     // Find status filter dropdown
-    const statusFilter = screen.getByTestId("analyzer-status-filter");
+    // filters are hidden by default, toggle them on first
+    const toggle = await screen.findByTestId("toggle-filters-button");
+    await userEvent.click(toggle);
+    const statusFilter = await screen.findByTestId("analyzer-status-filter");
     expect(statusFilter).not.toBeNull();
 
     // Act: Select VALIDATION filter

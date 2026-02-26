@@ -40,6 +40,12 @@ export default function SlideOverNotifications(props) {
   const intialSubscriptionState = async () => {
     try {
       const res = await getFromOpenElisServerV2("/rest/notification/pnconfig");
+      if (!res) {
+        // No response or authentication failed
+        setSubscriptionState("NotSubscribed");
+        console.log("NotSubscribed - No response from server");
+        return;
+      }
       const reg = await navigator.serviceWorker.ready;
       const subscription = await reg.pushManager.getSubscription();
       if (!subscription && !res?.pf_endpoint) {
@@ -56,6 +62,7 @@ export default function SlideOverNotifications(props) {
       }
     } catch (error) {
       console.error("Error checking subscription status:", error);
+      // Silently set to NotSubscribed on any error (includes auth errors)
       setSubscriptionState("NotSubscribed");
     }
   };

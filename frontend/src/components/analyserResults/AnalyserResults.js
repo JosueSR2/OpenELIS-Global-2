@@ -257,7 +257,7 @@ const AnalyserResults = (props) => {
                   />
                 )}
               </Field>
-              </div>
+            </div>
           </>
         );
 
@@ -363,9 +363,8 @@ const AnalyserResults = (props) => {
               alt="nonconforming"
               width="25" // Set your desired width
               height="20" // Set your desired height
-
             />
-            </picture>
+          </picture>
           <b>
             {" "}
             <FormattedMessage id="validation.label.nonconform" />
