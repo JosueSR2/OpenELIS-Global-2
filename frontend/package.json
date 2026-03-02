@@ -6,10 +6,10 @@
     "node": "^20.1.0 || ^22.0.0 || >=24.0.0"
   },
   "dependencies": {
-    "@carbon/charts": "^1.27.2",
-    "@carbon/charts-react": "^1.5.2",
-    "@carbon/icons-react": "^11.17.0",
-    "@carbon/react": "^1.15.0",
+    "@carbon/charts": "1.27.2",
+    "@carbon/charts-react": "1.5.2",
+    "@carbon/icons-react": "11.17.0",
+    "@carbon/react": "1.15.0",
     "@carbon/themes": "11.10.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
     "@fortawesome/free-regular-svg-icons": "^5.13.0",
@@ -47,11 +47,12 @@
     "style-loader": "^3.3.1",
     "styled-components": "^5.3.6",
     "swr": "2.0.3",
+    "single-spa": "5.9.5",
     "web-vitals": "^2.1.4",
     "yup": "^0.29.2"
   },
   "scripts": {
-    "start": "GENERATE_SOURCEMAP=false HTTPS=true react-scripts start",
+    "start": "GENERATE_SOURCEMAP=false react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:unit": "react-scripts test",

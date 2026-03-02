@@ -116,16 +116,22 @@ services:
 
          
     frontend.openelis.org:
-        image: itechuw/openelis-global-2-frontend-dev:develop
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        image: openelis-global-2-frontend-dev-local:develop
         container_name: openelisglobal-front-end
        # platform: linux/amd64
         networks:
             - default
+        command: sh -lc "PORT=80 HTTPS=false npm start"
         volumes:
-            - './frontend/src:/app/src'
-            - './frontend/public:/app/public'
+            - './frontend:/app'
+            - frontend-node-modules:/app/node_modules
         environment:
             - CHOKIDAR_USEPOLLING=true
+            - WATCHPACK_POLLING=true
+            - DISABLE_ESLINT_PLUGIN=true
         tty: true
 
     proxy:
@@ -170,3 +176,4 @@ volumes:
   key_trust-store-volume:
   certs-vol:
   keys-vol:
+  frontend-node-modules:

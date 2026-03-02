@@ -97,7 +97,7 @@ function Login(props) {
     // Add cache-busting parameter to prevent stale logo display after upload
     const logoSrc = loginLogoUrl
       ? `${config.serverBaseUrl}${loginLogoUrl}?v=${logoVersion}`
-      : `images/openelis_logo_full.png`;
+      : `images/likdicom_logo_full.png`;
 
     return (
       <>
@@ -106,13 +106,13 @@ function Login(props) {
           <picture>
             <img
               src={logoSrc}
-              alt="fullsize logo"
+              alt="likdicom full logo"
               width="300"
               height="56"
               style={{ objectFit: "contain" }}
               onError={(e) => {
                 // Fallback to default logo if custom logo fails to load
-                e.target.src = `images/openelis_logo_full.png`;
+                e.target.src = `images/likdicom_logo_full.png`;
               }}
             />
           </picture>

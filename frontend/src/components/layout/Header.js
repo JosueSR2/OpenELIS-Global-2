@@ -347,12 +347,12 @@ function OEHeader({
     );
   };
 
-  const logo = () => {
+  function logo() {
     // Use custom header logo if available, otherwise use default
     // Add cache-busting parameter to prevent stale logo display after upload
     const logoSrc = headerLogoUrl
       ? `${config.serverBaseUrl}${headerLogoUrl}?v=${logoVersion}`
-      : `../images/openelis_logo.png`;
+      : `../images/likdicom_logo.png`;
 
     return (
       <>
@@ -360,17 +360,17 @@ function OEHeader({
           <img
             className="logo"
             src={logoSrc}
-            alt="logo"
+            alt="likdicom logo"
             style={{ objectFit: "contain", maxHeight: "71px" }}
             onError={(e) => {
               // Fallback to default logo if custom logo fails to load
-              e.target.src = `../images/openelis_logo.png`;
+              e.target.src = `../images/likdicom_logo.png`;
             }}
           />
         </picture>
       </>
     );
-  };
+  }
   const hideTimerRef = useRef(null);
 
   /**

@@ -10,6 +10,12 @@ import {
 } from "./Utils";
 import config from "../../config.json";
 
+const DEFAULT_BRANDING = {
+  headerColor: "#b71c1c",
+  primaryColor: "#c62828",
+  secondaryColor: "#8e1717",
+};
+
 // =============================================================================
 // API Functions
 // =============================================================================
@@ -113,19 +119,30 @@ export const resetBranding = (callback, extraParams) => {
  * @param {Object} branding - Branding configuration object
  */
 export const applyBrandingColors = (branding) => {
-  if (!branding) return;
-
   const root = document.documentElement;
+  const effectiveBranding = {
+    ...DEFAULT_BRANDING,
+    ...(branding || {}),
+  };
 
-  if (branding.headerColor) {
-    root.style.setProperty("--site-branding-header", branding.headerColor);
-  }
-  if (branding.primaryColor) {
-    root.style.setProperty("--cds-interactive-01", branding.primaryColor);
-  }
-  if (branding.secondaryColor) {
-    root.style.setProperty("--cds-interactive-02", branding.secondaryColor);
-  }
+  root.style.setProperty(
+    "--site-branding-header",
+    effectiveBranding.headerColor,
+  );
+  root.style.setProperty(
+    "--cds-interactive-01",
+    effectiveBranding.primaryColor,
+  );
+  root.style.setProperty(
+    "--cds-interactive-02",
+    effectiveBranding.secondaryColor,
+  );
+  root.style.setProperty("--cds-link-primary", effectiveBranding.primaryColor);
+  root.style.setProperty(
+    "--cds-link-primary-hover",
+    effectiveBranding.secondaryColor,
+  );
+  root.style.setProperty("--cds-focus", effectiveBranding.secondaryColor);
 };
 
 /**

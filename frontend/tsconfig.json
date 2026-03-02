@@ -18,6 +18,8 @@
     ],
     "resolveJsonModule": true,
     "noEmit": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "target": "esnext"
   }
 }

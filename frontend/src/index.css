@@ -1,10 +1,24 @@
+/* Minimalist red-first visual defaults.
+   Site branding from backend can still override these at runtime. */
+:root {
+  --site-branding-header: #b71c1c;
+  --cds-interactive-01: #c62828;
+  --cds-interactive-02: #8e1717;
+  --cds-link-primary: #b71c1c;
+  --cds-link-primary-hover: #8e1717;
+  --cds-focus: #8e1717;
+  --cds-background: #f6f6f6;
+  --cds-layer-01: #ffffff;
+  --cds-layer-hover-01: #fff1f1;
+  --cds-border-subtle-01: #e0e0e0;
+}
+
 body {
   margin: 0;
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
-    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-family: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f6f6f6;
 }
 
 code {
@@ -21,8 +35,52 @@ code {
  * The value is set on :root at runtime.
  */
 .cds--header.cds--header {
-  background-color: var(--site-branding-header, #295785);
+  background-color: var(--site-branding-header, #b71c1c);
   border-bottom: none;
+  box-shadow: 0 2px 12px rgba(130, 0, 0, 0.16);
+}
+
+.cds--header .cds--header__name,
+.cds--header .cds--header__menu-item,
+.cds--header .cds--header__action,
+.cds--header .cds--header__menu-title {
+  color: #fff;
+}
+
+.cds--side-nav {
+  background-color: #fff;
+  border-right: 1px solid #e0e0e0;
+}
+
+.cds--side-nav__navigation {
+  background-color: #fff;
+}
+
+.cds--side-nav__link:hover,
+.cds--side-nav__menu-item:hover > .cds--side-nav__submenu,
+.cds--side-nav__menu-item:hover > .cds--side-nav__menu {
+  background-color: #fff5f5 !important;
+}
+
+.cds--side-nav__link--current,
+.cds--side-nav__link[aria-current="page"] {
+  border-left: 4px solid #c62828 !important;
+  background-color: #ffecec !important;
+}
+
+.cds--btn--primary {
+  background-color: #c62828;
+}
+
+.cds--btn--primary:hover {
+  background-color: #8e1717;
+}
+
+.cds--tile,
+.cds--data-table-container,
+.cds--structured-list {
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
 }
 
 .slide-over-root {
@@ -62,6 +120,8 @@ code {
 }
 
 .backdrop-blur {
+  /* Safari/iOS requires the prefixed version */
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
 }
 

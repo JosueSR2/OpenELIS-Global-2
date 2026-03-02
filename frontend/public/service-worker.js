@@ -42,7 +42,7 @@ self.addEventListener("push", (event) => {
     const notificationOptions = {
       body: data.body || "Message Received from OpenELIS",
       tag: data.external_id || "default-tag",
-      icon: "images/openelis_logo.png",
+      icon: "images/likdicom_logo.png",
     };
 
     event.waitUntil(

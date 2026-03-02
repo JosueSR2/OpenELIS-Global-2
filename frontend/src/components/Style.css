@@ -37,7 +37,7 @@ li.clickableUserDetails {
 }
 
 li.clickableUserDetails:hover {
-  background: #072655;
+  background: #8e1717;
 }
 
 .adminPageContent {
@@ -85,7 +85,7 @@ li.clickableUserDetails:hover {
 .gridBoundary,
 .columnBoundary,
 .resultBody {
-  border: 0.5px solid #295785;
+  border: 0.5px solid #c62828;
   border-radius: 5px;
 }
 .ruleBody {
@@ -241,7 +241,7 @@ button {
 }
 
 .resultBody {
-  border: 0.5px solid #295785;
+  border: 0.5px solid #c62828;
   border-radius: 5px;
   margin: 2%;
   padding: 0.5%;
@@ -255,7 +255,7 @@ button {
 }
 
 .section {
-  border: 0.5px solid green;
+  border: 0.5px solid #c62828;
   border-radius: 3px;
   margin: 0.5%;
   padding: 1%;
@@ -376,7 +376,7 @@ button {
 }
 
 .cds--side-nav__link a:hover {
-  background-color: var(--cds-background, #295785);
+  background-color: var(--cds-background, #fff5f5);
 }
 
 .reduced-padding-nav-menu-item > a.cds--side-nav__link {
@@ -395,7 +395,7 @@ button {
 }
 
 .top-level-menu-item > a:hover {
-  background-color: var(--cds-background-hover, #072655);
+  background-color: var(--cds-background-hover, #ffe5e5);
 }
 
 /* Removed pointer-events: none - was blocking subnav clicks after onClick refactor */

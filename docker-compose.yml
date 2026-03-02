@@ -102,7 +102,10 @@ services:
             -  key_trust-store-volume:/etc/openelis-global
         
     frontend.openelis.org:
-        image: itechuw/openelis-global-2-frontend:develop
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile.prod
+        image: openelis-global-2-frontend-local:develop
         container_name: openelisglobal-front-end
         platform: linux/amd64
         networks:
