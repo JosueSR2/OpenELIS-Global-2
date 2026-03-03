@@ -405,7 +405,7 @@ function DeviceHistoryExpansion({ device }) {
         case "PENDING":
           return <Tag type="red">Pending</Tag>;
         case "IN_PROGRESS":
-          return <Tag type="blue">In Progress</Tag>;
+          return <Tag type="red">In Progress</Tag>;
         case "COMPLETED":
           return <Tag type="green">Completed</Tag>;
         case "CANCELLED":
@@ -447,7 +447,7 @@ function DeviceHistoryExpansion({ device }) {
       eventType: (
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
           {isAlert ? <Warning size={16} /> : <Document size={16} />}
-          <Tag type={isAlert ? "red" : "blue"} size="sm">
+          <Tag type={isAlert ? "red" : "red"} size="sm">
             {isAlert ? "Alert" : "Corrective Action"}
           </Tag>
         </div>

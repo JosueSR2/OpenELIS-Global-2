@@ -19,7 +19,7 @@
 
 .sample-actions-overflow-menu button.cds--overflow-menu__trigger:focus,
 .sample-actions-overflow-menu .cds--overflow-menu__trigger:focus {
-  outline: 2px solid var(--cds-focus, #0f62fe) !important;
+  outline: 2px solid var(--cds-focus, #ec3912) !important;
   outline-offset: -2px !important;
 }
 
@@ -55,7 +55,7 @@ ul.cds--overflow-menu-options[aria-label*="Sample actions"]
 
 ul.cds--overflow-menu-options[aria-label*="Sample actions"]
   .cds--overflow-menu-options__btn:focus {
-  outline: 2px solid var(--cds-focus, #0f62fe) !important;
+  outline: 2px solid var(--cds-focus, #ec3912) !important;
   outline-offset: -2px !important;
   background-color: var(--cds-layer-hover-01, #f4f4f4) !important;
 }

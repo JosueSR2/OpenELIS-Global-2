@@ -161,7 +161,7 @@ const LandingPage: React.FC = () => {
                       selectedDepartment === dept.id ? "#c6c6c6" : "inherit",
                     borderColor:
                       selectedDepartment === dept.id
-                        ? "#0f62fe"
+                        ? "#ec3912"
                         : "transparent",
                     transition: "background-color 0.3s, border-color 0.3s",
                   }}

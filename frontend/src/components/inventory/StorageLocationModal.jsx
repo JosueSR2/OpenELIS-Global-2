@@ -141,7 +141,7 @@ const StorageLocationModal = ({ open, onClose, onSave }) => {
           labelText={
             <>
               {intl.formatMessage({ id: "storage.location.name" })}
-              <span style={{ color: "#da1e28" }}> *</span>
+              <span style={{ color: "#ec3912" }}> *</span>
             </>
           }
           placeholder="e.g., Cold Storage Room 1"
@@ -163,7 +163,7 @@ const StorageLocationModal = ({ open, onClose, onSave }) => {
           titleText={
             <>
               {intl.formatMessage({ id: "storage.location.type" })}
-              <span style={{ color: "#da1e28" }}> *</span>
+              <span style={{ color: "#ec3912" }}> *</span>
             </>
           }
           label="Select location type"
@@ -220,7 +220,7 @@ const StorageLocationModal = ({ open, onClose, onSave }) => {
         />
 
         {error && (
-          <div className="error-message" style={{ color: "#da1e28" }}>
+          <div className="error-message" style={{ color: "#ec3912" }}>
             {error}
           </div>
         )}

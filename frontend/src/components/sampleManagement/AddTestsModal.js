@@ -410,13 +410,13 @@ function AddTestsModal({
               gap: "0.5rem",
             }}
           >
-            <Tag type="blue" size="sm">
+            <Tag type="red" size="sm">
               {aliquotCount}{" "}
               {intl.formatMessage({
                 id: "sample.management.addTests.modal.aliquotsIncluded",
               })}
             </Tag>
-            <span style={{ fontSize: "0.875rem", color: "#0043ce" }}>
+            <span style={{ fontSize: "0.875rem", color: "#ec3912" }}>
               {intl.formatMessage({
                 id: "sample.management.addTests.modal.bulkAliquotNote",
               })}
@@ -594,7 +594,7 @@ function AddTestsModal({
                           selectedTests.map((test) => (
                             <Tag
                               key={test.id}
-                              type="blue"
+                              type="red"
                               filter
                               onClose={() => handleRemoveTest(test.id)}
                             >

@@ -430,7 +430,7 @@ const HomeDashBoard: React.FC<DashBoardProps> = () => {
               {selectedTile.type == "ORDERS_IN_PROGRESS" ||
               selectedTile.type == "ORDERS_READY_FOR_VALIDATION" ? (
                 <Link
-                  style={{ color: "blue" }}
+                  style={{ color: "#ec3912" }}
                   href={
                     selectedTile.type == "ORDERS_IN_PROGRESS"
                       ? "/result?type=order&doRange=false&accessionNumber=" +
@@ -450,7 +450,7 @@ const HomeDashBoard: React.FC<DashBoardProps> = () => {
     } else if (cell.info.header === "countOfOrdersEntered" && cell.value) {
       return (
         <TableCell key={cell.id}>
-          <Link style={{ color: "blue" }}>{cell.value} </Link>
+          <Link style={{ color: "#ec3912" }}>{cell.value} </Link>
         </TableCell>
       );
     } else {

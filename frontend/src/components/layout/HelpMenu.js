@@ -94,7 +94,7 @@ const HelpMenu = ({ helpOpen, handlePanelToggle }) => {
         ref={panelRef}
         aria-label="Help Panel"
         expanded={helpOpen}
-        style={{ background: "#295785", color: "white" }}
+        style={{ background: "#ec3912", color: "white" }}
       >
         <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
           {["manual", "tutorials", "release-notes"].map((type) => (

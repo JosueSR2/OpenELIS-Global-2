@@ -285,7 +285,7 @@ const LotEntryModal = ({ open, onClose, onSave, lot = null }) => {
             >
               <FormLabel>
                 <FormattedMessage id="lot.selectLocation" />
-                <span style={{ color: "#da1e28" }}> *</span>
+                <span style={{ color: "#ec3912" }}> *</span>
               </FormLabel>
               <Button
                 kind="ghost"

@@ -13,7 +13,7 @@
 }
 
 .required-indicator {
-  color: #da1e28;
+  color: #ec3912;
 }
 
 .image-selector-content {
@@ -38,7 +38,7 @@
 }
 
 .image-display:hover {
-  border-color: #0f62fe;
+  border-color: #ec3912;
   background-color: #e5f6ff;
 }
 

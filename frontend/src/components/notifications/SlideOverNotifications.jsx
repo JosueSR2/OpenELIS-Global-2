@@ -32,36 +32,44 @@ export default function SlideOverNotifications(props) {
   const [subscriptionState, setSubscriptionState] = useState(null);
 
   useEffect(() => {
-    // Whenever subscriptionState changes, re-check the subscription status
+    // Check subscription state only when panel is open and user is authenticated.
+    if (!props?.isAuthenticated || !props?.open) {
+      setSubscriptionState("NotSubscribed");
+      return;
+    }
+    initialSubscriptionState();
+  }, [props?.isAuthenticated, props?.open]);
 
-    intialSubscriptionState(); // Fetch the current subscription state again
-  }, [subscriptionState]);
+  const initialSubscriptionState = async () => {
+    if (!props?.isAuthenticated) {
+      setSubscriptionState("NotSubscribed");
+      return;
+    }
 
-  const intialSubscriptionState = async () => {
+    if (!("serviceWorker" in navigator)) {
+      setSubscriptionState("NotSubscribed");
+      return;
+    }
+
     try {
       const res = await getFromOpenElisServerV2("/rest/notification/pnconfig");
       if (!res) {
         // No response or authentication failed
         setSubscriptionState("NotSubscribed");
-        console.log("NotSubscribed - No response from server");
         return;
       }
       const reg = await navigator.serviceWorker.ready;
       const subscription = await reg.pushManager.getSubscription();
-      if (!subscription && !res?.pf_endpoint) {
+      if (!subscription && !res?.pfEndpoint) {
         setSubscriptionState("NotSubscribed");
-        console.log("NotSubscribed");
       } else if (subscription?.endpoint === res?.pfEndpoint) {
         setSubscriptionState("SubscribedOnThisDevice");
-        console.log("SubscribedOnThisDevice");
       } else {
-        console.log("subscription?.endpoint", subscription?.endpoint);
-
         setSubscriptionState("SubscribedOnAnotherDevice");
-        console.log("SubscribedOnAnotherDevice");
       }
     } catch (error) {
-      console.error("Error checking subscription status:", error);
+      // Avoid noisy console errors on unauthenticated/login flow.
+      console.debug("Subscription status unavailable:", error);
       // Silently set to NotSubscribed on any error (includes auth errors)
       setSubscriptionState("NotSubscribed");
     }

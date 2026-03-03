@@ -232,7 +232,7 @@ const InventoryReportsModal = ({ open, onClose }) => {
           <FormLabel>
             <FormattedMessage id="reports.dateRange" />
             {isDateRangeRequired && (
-              <span style={{ color: "#da1e28" }}> *</span>
+              <span style={{ color: "#ec3912" }}> *</span>
             )}
           </FormLabel>
           <DatePicker

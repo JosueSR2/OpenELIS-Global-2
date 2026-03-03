@@ -428,8 +428,8 @@ const PatientPhotoField = ({ value, onChange, label = "Photo du patient" }) => {
 
         .cds--tabs__nav-item--selected {
           background: #fff;
-          color: #0f62fe;
-          border-bottom-color: #0f62fe;
+          color: #ec3912;
+          border-bottom-color: #ec3912;
         }
 
         .cds--tabs__nav-item-label {
@@ -450,7 +450,7 @@ const PatientPhotoField = ({ value, onChange, label = "Photo du patient" }) => {
 
         .cds--inline-notification--error {
           background: #fff1f1;
-          border-left: 3px solid #da1e28;
+          border-left: 3px solid #ec3912;
         }
 
         .cds--inline-notification__details {
@@ -473,12 +473,12 @@ const PatientPhotoField = ({ value, onChange, label = "Photo du patient" }) => {
         }
 
         .photo-dropzone:hover {
-          border-color: #0f62fe;
+          border-color: #ec3912;
           background: #e8f4ff;
         }
 
         .photo-dropzone--active {
-          border-color: #0f62fe;
+          border-color: #ec3912;
           background: #d0e2ff;
         }
 
@@ -549,7 +549,7 @@ const PatientPhotoField = ({ value, onChange, label = "Photo du patient" }) => {
         }
 
         .cds--btn--primary {
-          background: #0f62fe;
+          background: #ec3912;
           color: #fff;
         }
 
@@ -564,8 +564,8 @@ const PatientPhotoField = ({ value, onChange, label = "Photo du patient" }) => {
 
         .cds--btn--secondary {
           background: transparent;
-          color: #0f62fe;
-          border: 1px solid #0f62fe;
+          color: #ec3912;
+          border: 1px solid #ec3912;
         }
 
         .cds--btn--secondary:hover {
@@ -573,7 +573,7 @@ const PatientPhotoField = ({ value, onChange, label = "Photo du patient" }) => {
         }
 
         .cds--btn--danger {
-          background: #da1e28;
+          background: #ec3912;
           color: #fff;
         }
 
@@ -613,7 +613,7 @@ const PatientPhotoField = ({ value, onChange, label = "Photo du patient" }) => {
         }
 
         .patient-photo-preview:hover {
-          border-color: #0f62fe;
+          border-color: #ec3912;
           background: #e8f4ff;
         }
 
@@ -720,7 +720,7 @@ const PatientFormExample = () => {
         }
 
         .cds--text-input:focus {
-          outline: 2px solid #0f62fe;
+          outline: 2px solid #ec3912;
           outline-offset: -2px;
         }
       `}</style>

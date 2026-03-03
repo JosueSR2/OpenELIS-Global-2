@@ -1,6 +1,6 @@
 {
-  "short_name": "OpenELIS",
-  "name": "OpenELIS Global",
+  "short_name": "LikDiCom",
+  "name": "LikDiCom",
   "icons": [
     {
       "src": "images/favicon-16x16.png",
@@ -10,6 +10,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#b71c1c",
-  "background_color": "#ffffff"
+  "theme_color": "#ec3912",
+  "background_color": "#fbe4df"
 }

@@ -54,7 +54,7 @@ const ErrorDetailsModal = ({ error, open, onClose, onAcknowledge }) => {
       ? "red"
       : severity === "ERROR" || severity === "error"
         ? "magenta"
-        : "blue";
+        : "red";
 
   // Get error type label
   const errorTypeKey = `analyzer.errorDashboard.errorType.${errorType.toLowerCase()}`;
@@ -120,7 +120,7 @@ const ErrorDetailsModal = ({ error, open, onClose, onAcknowledge }) => {
             <h3>
               {intl.formatMessage({ id: "analyzer.errorDetails.errorType" })}
             </h3>
-            <Tag type="blue">{errorTypeLabel}</Tag>
+            <Tag type="red">{errorTypeLabel}</Tag>
           </Column>
           <Column lg={8}>
             <h3>

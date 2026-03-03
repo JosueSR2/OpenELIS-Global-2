@@ -416,12 +416,18 @@ const CalculatedValue: React.FC<CalculatedValueProps> = () => {
         JSON.stringify(calculationList[index]),
         (status) => handleCalculationSubmited(status, index),
       );
-    } catch (error) {
+    } catch (err) {
+      // Exceptions are typed as `unknown` in strict mode.  Cast to Error or
+      // convert to string before accessing `message` so the production build
+      // will succeed under `--strict` settings.
+      const error = err as Error;
       setNotificationVisible(true);
       addNotification({
         kind: NotificationKinds.error,
         title: intl.formatMessage({ id: "notification.title" }),
-        message: "Invalid Calculation Logic : " + error.message,
+        message:
+          "Invalid Calculation Logic : " +
+          (error?.message ? error.message : String(err)),
       });
     }
   };

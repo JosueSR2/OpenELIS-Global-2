@@ -39,27 +39,27 @@
 }
 
 /* Carbon Design System color tokens for location types */
-/* FR-057a: blue-70 for rooms, teal-70 for devices, purple-70 for shelves, orange-70 for racks */
+/* FR-057a: orange palette for all location types */
 .location-count-rooms {
-  color: var(--cds-blue-70, #0043ce);
-  background-color: rgba(0, 67, 206, 0.1);
-  border: 1px solid rgba(0, 67, 206, 0.2);
+  color: var(--oe-palette-3, #ec3912);
+  background-color: rgba(236, 57, 18, 0.1);
+  border: 1px solid rgba(236, 57, 18, 0.2);
 }
 
 .location-count-devices {
-  color: var(--cds-teal-70, #007d79);
-  background-color: rgba(0, 125, 121, 0.1);
-  border: 1px solid rgba(0, 125, 121, 0.2);
+  color: var(--oe-palette-5, #f46243);
+  background-color: rgba(244, 98, 67, 0.1);
+  border: 1px solid rgba(244, 98, 67, 0.2);
 }
 
 .location-count-shelves {
-  color: var(--cds-purple-70, #8a3ffc);
-  background-color: rgba(138, 63, 252, 0.1);
-  border: 1px solid rgba(138, 63, 252, 0.2);
+  color: var(--oe-palette-6, #f46c4e);
+  background-color: rgba(244, 108, 78, 0.1);
+  border: 1px solid rgba(244, 108, 78, 0.2);
 }
 
 .location-count-racks {
-  color: var(--cds-orange-70, #ff832b);
-  background-color: rgba(255, 131, 43, 0.1);
-  border: 1px solid rgba(255, 131, 43, 0.2);
+  color: var(--oe-palette-7, #f25434);
+  background-color: rgba(242, 84, 52, 0.1);
+  border: 1px solid rgba(242, 84, 52, 0.2);
 }

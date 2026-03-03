@@ -6,7 +6,7 @@ body {
   padding: 0.5rem;
   width: 350px;
   --cds-text-primary: black;
-  --cds-text-secondary: blue;
+  --cds-text-secondary: #ec3912;
   margin-top: -1%;
 }
 
@@ -44,7 +44,7 @@ body {
 
 .suggestion-active,
 .suggestions li:hover {
-  background-color: #295785;
+  background-color: #ec3912;
   color: #ffffff;
   cursor: pointer;
 }
@@ -56,13 +56,13 @@ body {
 .reflexInputText {
   --cds-text-primary: black;
   width: 100%;
-  --cds-text-secondary: blue;
+  --cds-text-secondary: #ec3912;
 }
 
 .reflexInputSelect {
   --cds-text-primary: black;
   width: 100px;
-  --cds-text-secondary: blue;
+  --cds-text-secondary: #ec3912;
 }
 
 .ruleFieldButton {

@@ -80,7 +80,7 @@ function confirmSaveForwardPopup(direction)
     strHTML += ' window.opener.setAction(window.opener.document.getElementById("mainForm"), "NextPrevious", "no", reqParms);self.close();} ';
 
     strHTML += ' setTimeout("impor()",359999);</SCRIPT';
-    strHTML += '><title>' + "<%=title%>" + '</title></head>';
+    strHTML += '><title>' + "<%=title.replace(\"OpenELIS\", \"LikDiCom\").replace(\"OpenElis\", \"LikDiCom\").replace(\"openelis\", \"LikDiCom\")%>" + '</title></head>';
     strHTML += '<body onBlur="fnHandleFocus();" onLoad="fnHandleFocus();" ><form name="confirmSaveIt" method="get" action=""><div id="popupBody"><table><tr><td class="popuplistdata">';
     strHTML += message;
     if (direction == 'next') {

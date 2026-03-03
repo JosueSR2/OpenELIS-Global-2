@@ -43,7 +43,7 @@
 }
 
 .icon-wrapper:hover {
-  border: 1px solid #78a9ff; /* Add a blue border on hover */
+  border: 1px solid #f9aca0; /* Add a blue border on hover */
   cursor: pointer;
 }
 

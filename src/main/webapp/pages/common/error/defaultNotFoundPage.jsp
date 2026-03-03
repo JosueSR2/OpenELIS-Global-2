@@ -8,8 +8,8 @@
 <html>
 <head>
 <head>
-	<link rel="icon" href="images/favicon.ico" type="image/x-icon">
-	<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="favicon/favicon.ico?v=likdicom" type="image/x-icon">
+	<link rel="shortcut icon" href="favicon/favicon.ico?v=likdicom" type="image/x-icon">
     <title><spring:message code="errors.unhandled.title" text="errors.unhandled.title" /> </title>   
     <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
     <meta http-equiv="pragma" content="no-cache">
@@ -61,7 +61,7 @@
 <body id="defaultErrorPage">
 
 <div id="header">
-    <div id="oe-logo"><img id="oe-logo-img" src="images/openelis_logo.png" title="OpenELIS" alt="OpenELIS"></div>
+    <div id="oe-logo"><img id="oe-logo-img" src="images/logo.png?v=likdicom" title="LikDiCom" alt="LikDiCom"></div>
     <div id="oe-title"><spring:message code="homePage.heading" text="homePage.heading"/></div>
 </div>
       
@@ -121,5 +121,3 @@ $(document).ready(function () {
     
 </body>
 </html>
-
-

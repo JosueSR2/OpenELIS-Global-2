@@ -293,9 +293,9 @@ function CreateAliquotModal({ open, onClose, parentSample, onSuccess }) {
             style={{
               marginTop: "1rem",
               padding: "0.75rem",
-              backgroundColor: "#e0f0ff",
+              backgroundColor: "#fbe4df",
               borderRadius: "4px",
-              border: "1px solid #0f62fe",
+              border: "1px solid #ec3912",
             }}
           >
             <strong>

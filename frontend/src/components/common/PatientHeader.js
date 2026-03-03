@@ -75,43 +75,43 @@ const PatientHeader = (props) => {
                     {/* <br/> */}
                     <div className="patient-id">
                       {nationalId && (
-                        <Tag size="lg" type="blue" style={tagStyle}>
+                        <Tag size="lg" type="red" style={tagStyle}>
                           <FormattedMessage id="patient.natioanalid" /> :{" "}
                           <strong>{nationalId}</strong>
                         </Tag>
                       )}
                       {subjectNumber && (
-                        <Tag size="lg" type="blue" style={tagStyle}>
+                        <Tag size="lg" type="red" style={tagStyle}>
                           <FormattedMessage id="patient.subject.number" /> :{" "}
                           <strong>{subjectNumber}</strong>
                         </Tag>
                       )}
                       {accesionNumber && (
-                        <Tag size="lg" type="blue" style={tagStyle}>
+                        <Tag size="lg" type="red" style={tagStyle}>
                           <FormattedMessage id="quick.entry.accession.number" />{" "}
                           : <strong>{accesionNumber}</strong>
                         </Tag>
                       )}
                       {orderDate && (
-                        <Tag size="lg" type="blue" style={tagStyle}>
+                        <Tag size="lg" type="red" style={tagStyle}>
                           <FormattedMessage id="sample.label.orderdate" /> :{" "}
                           <strong>{orderDate}</strong>
                         </Tag>
                       )}
                       {requester && (
-                        <Tag size="lg" type="blue" style={tagStyle}>
+                        <Tag size="lg" type="red" style={tagStyle}>
                           <FormattedMessage id="sample.label.requester" />:{" "}
                           <strong>{requester}</strong>
                         </Tag>
                       )}
                       {referringFacility && (
                         <>
-                          <Tag size="lg" type="blue" style={tagStyle}>
+                          <Tag size="lg" type="red" style={tagStyle}>
                             <FormattedMessage id="sample.label.facility" />:{" "}
                             <strong>{referringFacility}</strong>
                           </Tag>
 
-                          <Tag size="lg" type="blue" style={tagStyle}>
+                          <Tag size="lg" type="red" style={tagStyle}>
                             <FormattedMessage id="sample.label.dept" /> :{" "}
                             <strong>{department}</strong>
                           </Tag>

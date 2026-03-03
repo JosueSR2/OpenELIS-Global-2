@@ -27,6 +27,7 @@ import {
   Tile,
   Button,
   Tag,
+  InlineNotification,
   OverflowMenu,
   OverflowMenuItem,
   Dropdown,
@@ -50,6 +51,7 @@ const ErrorDashboard = () => {
   const [errors, setErrors] = useState([]);
   const [filteredErrors, setFilteredErrors] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     errorType: "",
@@ -67,6 +69,7 @@ const ErrorDashboard = () => {
 
   const loadErrors = useCallback((searchFilters = {}) => {
     setLoading(true);
+    setLoadError("");
     // TODO: Replace with actual API endpoint when AnalyzerErrorRestController is implemented
     // Endpoint will be: GET /rest/analyzer/errors?errorType=...&severity=...&analyzer=...
     const endpoint = "/rest/analyzer/errors";
@@ -79,7 +82,7 @@ const ErrorDashboard = () => {
       params.append("severity", searchFilters.severity);
     }
     if (searchFilters.analyzer) {
-      params.append("analyzer", searchFilters.analyzer);
+      params.append("analyzerId", searchFilters.analyzer);
     }
     if (searchFilters.search) {
       params.append("search", searchFilters.search);
@@ -90,6 +93,28 @@ const ErrorDashboard = () => {
       : endpoint;
 
     getFromOpenElisServer(url, (data) => {
+      if (data === undefined) {
+        setErrors([]);
+        setFilteredErrors([]);
+        setStats({
+          total: 0,
+          unacknowledged: 0,
+          critical: 0,
+          last24Hours: 0,
+        });
+        setLoadError(
+          intl.formatMessage({
+            id: "analyzer.errorDashboard.loadError.message",
+          }),
+        );
+        setLoading(false);
+        return;
+      }
+
+      if (data?.error) {
+        setLoadError(data.message || data.error);
+      }
+
       // API returns { data: { content: [...], statistics: {...} }, status: "success" }
       let errors = [];
       let statistics = null;
@@ -144,7 +169,7 @@ const ErrorDashboard = () => {
       }
       setLoading(false);
     });
-  }, []);
+  }, [intl]);
 
   // Initial load + restore state from URL/sessionStorage
   useEffect(() => {
@@ -410,6 +435,19 @@ const ErrorDashboard = () => {
         </Button>
       </div>
 
+      {loadError && (
+        <InlineNotification
+          kind="error"
+          lowContrast
+          hideCloseButton
+          title={intl.formatMessage({
+            id: "analyzer.errorDashboard.loadError.title",
+          })}
+          subtitle={loadError}
+          style={{ marginBottom: "1rem" }}
+        />
+      )}
+
       {/* Statistics Cards */}
       <Grid
         className="error-dashboard-stats"
@@ -650,7 +688,7 @@ const ErrorDashboard = () => {
                           ? "red"
                           : severity === "ERROR" || severity === "error"
                             ? "magenta"
-                            : "blue";
+                            : "red";
 
                       // Get error type label
                       const errorTypeKey = `analyzer.errorDashboard.errorType.${errorType.toLowerCase()}`;
@@ -673,7 +711,7 @@ const ErrorDashboard = () => {
                             if (headerKey === "type") {
                               testId = `error-type-${row.id}`;
                               cellContent = (
-                                <Tag type="blue" data-testid={testId}>
+                                <Tag type="red" data-testid={testId}>
                                   {errorTypeLabel}
                                 </Tag>
                               );

@@ -8,23 +8,24 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions"%>
 
 
 <html>
 <head>
 <link rel="stylesheet" href="fontawesome-free-5.13.1-web/css/fontawesome.min.css">
 <link href="fontawesome-free-5.13.1-web/css/solid.css" rel="stylesheet">
-	<link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-	<link rel="manifest" href="favicon/site.webmanifest">
-	<link rel="mask-icon" href="favicon/safari-pinned-tab.svg" color="#5bbad5">
-	<link rel="shortcut icon" href="favicon/favicon.ico">
-	<meta name="apple-mobile-web-app-title" content="OpenELIS Global">
-	<meta name="application-name" content="OpenELIS Global">
-	<meta name="msapplication-TileColor" content="#2d89ef">
+	<link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png?v=likdicom">
+	<link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png?v=likdicom">
+	<link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png?v=likdicom">
+	<link rel="manifest" href="favicon/site.webmanifest?v=likdicom">
+	<link rel="mask-icon" href="favicon/safari-pinned-tab.svg" color="#ec3912">
+	<link rel="shortcut icon" href="favicon/favicon.ico?v=likdicom">
+	<meta name="apple-mobile-web-app-title" content="LikDiCom">
+	<meta name="application-name" content="LikDiCom">
+	<meta name="msapplication-TileColor" content="#ec3912">
 	<meta name="msapplication-config" content="favicon/browserconfig.xml">
-	<meta name="theme-color" content="#ffffff">
+	<meta name="theme-color" content="#ec3912">
 	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
 
 <link rel="stylesheet" media="screen" type="text/css"
@@ -170,7 +171,7 @@ if (document.layers) {
 %>
 
 <title>
-		<c:out value="${title}" />
+		<c:out value="${fn:replace(fn:replace(fn:replace(title, 'OpenELIS', 'LikDiCom'), 'OpenElis', 'LikDiCom'), 'openelis', 'LikDiCom')}" />
 </title>
 <jsp:include page="${bannerFragment}"/>
 <jsp:include page="${loginHeaderFragment}"/>
@@ -203,4 +204,3 @@ if (document.layers) {
 
 
 </html>
-

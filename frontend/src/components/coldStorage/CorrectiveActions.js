@@ -113,7 +113,7 @@ function statusTag(status, isEdited = false) {
       case "PENDING":
         return <Tag type="red">Pending</Tag>;
       case "IN_PROGRESS":
-        return <Tag type="blue">In Progress</Tag>;
+        return <Tag type="red">In Progress</Tag>;
       case "COMPLETED":
         return <Tag type="green">Completed</Tag>;
       case "CANCELLED":

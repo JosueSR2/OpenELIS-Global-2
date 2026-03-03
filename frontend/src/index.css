@@ -1,16 +1,37 @@
-/* Minimalist red-first visual defaults.
-   Site branding from backend can still override these at runtime. */
+/* Minimalist palette defaults (global). Site branding can still override at runtime. */
 :root {
-  --site-branding-header: #b71c1c;
-  --cds-interactive-01: #c62828;
-  --cds-interactive-02: #8e1717;
-  --cds-link-primary: #b71c1c;
-  --cds-link-primary-hover: #8e1717;
-  --cds-focus: #8e1717;
-  --cds-background: #f6f6f6;
-  --cds-layer-01: #ffffff;
-  --cds-layer-hover-01: #fff1f1;
-  --cds-border-subtle-01: #e0e0e0;
+  --oe-palette-1: #fbe4df;
+  --oe-palette-2: #f48973;
+  --oe-palette-3: #ec3912;
+  --oe-palette-4: #f9aca0;
+  --oe-palette-5: #f46243;
+  --oe-palette-6: #f46c4e;
+  --oe-palette-7: #f25434;
+  --oe-palette-8: #f4a494;
+  --site-branding-header: #ec3912;
+  --site-branding-primary: #f46243;
+  --site-branding-secondary: #f25434;
+  --cds-interactive-01: #ec3912;
+  --cds-interactive-02: #f46243;
+  --cds-link-primary: #ec3912;
+  --cds-link-primary-hover: #f25434;
+  --cds-focus: #f25434;
+  --cds-blue-10: #fbe4df;
+  --cds-blue-20: #f9aca0;
+  --cds-blue-30: #f4a494;
+  --cds-blue-40: #f48973;
+  --cds-blue-50: #f46c4e;
+  --cds-blue-60: #f46243;
+  --cds-blue-70: #f25434;
+  --cds-blue-80: #ec3912;
+  --cds-blue-90: #b62b0d;
+  --cds-blue-100: #7a1f0b;
+  --cds-background: #fbe4df;
+  --cds-layer-01: #fff7f5;
+  --cds-layer-hover-01: #f9aca0;
+  --cds-border-subtle-01: #f9aca0;
+  --oe-text-primary: #2a1612;
+  --oe-text-secondary: #5f2d23;
 }
 
 body {
@@ -18,7 +39,10 @@ body {
   font-family: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f6f6f6;
+  background:
+    radial-gradient(circle at top left, #f9aca0 0%, transparent 38%),
+    linear-gradient(180deg, #fff7f5 0%, #fbe4df 100%);
+  color: var(--oe-text-primary);
 }
 
 code {
@@ -37,7 +61,7 @@ code {
 .cds--header.cds--header {
   background-color: var(--site-branding-header, #b71c1c);
   border-bottom: none;
-  box-shadow: 0 2px 12px rgba(130, 0, 0, 0.16);
+  box-shadow: 0 8px 24px rgba(236, 57, 18, 0.24);
 }
 
 .cds--header .cds--header__name,
@@ -48,39 +72,205 @@ code {
 }
 
 .cds--side-nav {
-  background-color: #fff;
-  border-right: 1px solid #e0e0e0;
+  background-color: #fff7f5;
+  border-right: 1px solid #f4a494;
 }
 
 .cds--side-nav__navigation {
-  background-color: #fff;
+  background-color: #fff7f5;
 }
 
 .cds--side-nav__link:hover,
 .cds--side-nav__menu-item:hover > .cds--side-nav__submenu,
 .cds--side-nav__menu-item:hover > .cds--side-nav__menu {
-  background-color: #fff5f5 !important;
+  background-color: #f9aca0 !important;
 }
 
 .cds--side-nav__link--current,
 .cds--side-nav__link[aria-current="page"] {
-  border-left: 4px solid #c62828 !important;
-  background-color: #ffecec !important;
+  border-left: 4px solid #ec3912 !important;
+  background-color: #f4a494 !important;
 }
 
 .cds--btn--primary {
-  background-color: #c62828;
+  background-color: #ec3912;
 }
 
 .cds--btn--primary:hover {
-  background-color: #8e1717;
+  background-color: #f25434;
 }
 
 .cds--tile,
 .cds--data-table-container,
 .cds--structured-list {
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 20px rgba(244, 108, 78, 0.16);
+}
+
+.cds--data-table-container,
+.cds--tile,
+.cds--structured-list,
+.cds--modal-container,
+.cds--accordion__item,
+.cds--dropdown,
+.cds--text-input,
+.cds--number input,
+.cds--date-picker-input__wrapper input {
+  border-color: #f4a494;
+}
+
+.cds--header-panel {
+  background: linear-gradient(180deg, #fff7f5 0%, #fbe4df 100%);
+  border-left: 2px solid #f25434;
+  box-shadow: -6px 12px 24px rgba(122, 34, 16, 0.2);
+}
+
+.cds--header-panel .cds--label,
+.cds--header-panel .cds--select-input,
+.cds--header-panel .cds--select-input option,
+.cds--header-panel li,
+.cds--header-panel svg {
+  color: #5f2d23 !important;
+}
+
+.cds--header-panel .userDetails {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.cds--header-panel .cds--select-input {
+  background-color: #fff7f5 !important;
+  border-bottom: 1px solid #f46c4e !important;
+}
+
+.cds--btn--secondary {
+  background-color: #f46c4e;
+}
+
+.cds--btn--secondary:hover {
+  background-color: #f25434;
+}
+
+.cds--btn--danger {
+  background-color: #ec3912;
+}
+
+.cds--btn--danger:hover {
+  background-color: #f25434;
+}
+
+.cds--text-input:focus,
+.cds--select-input:focus,
+.cds--dropdown:focus,
+.cds--dropdown:focus-within {
+  outline-color: #f25434;
+}
+
+.cds--link,
+a {
+  color: #ec3912;
+}
+
+.cds--link:hover,
+a:hover {
+  color: #f25434;
+}
+
+.cds--tag--blue,
+.cds--tag--cyan,
+.cds--tag--teal {
+  background-color: #f9aca0 !important;
+  color: #7a2210 !important;
+  border-color: #f46243 !important;
+}
+
+[style*="color: blue"] {
+  color: #ec3912 !important;
+}
+
+.oe-global-error-banner {
+  position: sticky;
+  top: 3rem;
+  z-index: 9200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid #f46c4e;
+  background: #fff7f5;
+  color: #7a2210;
+}
+
+.oe-global-error-banner__message {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.oe-global-error-banner__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.oe-global-error-fallback {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background:
+    radial-gradient(circle at top left, #f9aca0 0%, transparent 42%),
+    linear-gradient(180deg, #fff7f5 0%, #fbe4df 100%);
+}
+
+.oe-global-error-fallback__card {
+  width: min(720px, 100%);
+  background: #fff7f5;
+  border: 1px solid #f4a494;
+  border-radius: 0.75rem;
+  box-shadow: 0 12px 24px rgba(244, 108, 78, 0.2);
+  padding: 1.5rem;
+}
+
+.oe-global-error-fallback__title {
+  margin: 0 0 0.75rem 0;
+  color: #7a2210;
+}
+
+.oe-global-error-fallback__description {
+  margin: 0 0 1rem 0;
+  color: #5f2d23;
+}
+
+.oe-global-error-fallback__details {
+  max-height: 220px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0 0 1rem 0;
+  padding: 0.75rem;
   border-radius: 0.5rem;
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f4a494;
+  background: #fbe4df;
+  font-family: "IBM Plex Mono", Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8125rem;
+}
+
+.oe-global-error-fallback__actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .oe-global-error-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .oe-global-error-fallback__actions {
+    width: 100%;
+    flex-direction: column;
+  }
 }
 
 .slide-over-root {

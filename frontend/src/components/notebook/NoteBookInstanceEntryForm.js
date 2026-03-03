@@ -1167,7 +1167,7 @@ const NoteBookInstanceEntryForm = () => {
                       {projectTags.map((tag, index) => (
                         <Tag
                           key={index}
-                          type="blue"
+                          type="red"
                           size="sm"
                           style={{
                             marginRight: "0.5rem",
@@ -2217,7 +2217,7 @@ const NoteBookInstanceEntryForm = () => {
                                       (st) => st.id == page.sampleTypeId,
                                     );
                                     return sampleType ? (
-                                      <Tag type="blue" size="sm">
+                                      <Tag type="red" size="sm">
                                         {sampleType.value}
                                       </Tag>
                                     ) : (
@@ -2297,7 +2297,7 @@ const NoteBookInstanceEntryForm = () => {
                                       return test ? (
                                         <Tag
                                           key={testIndex}
-                                          type="blue"
+                                          type="red"
                                           size="sm"
                                         >
                                           {test.value}

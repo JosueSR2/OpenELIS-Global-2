@@ -114,7 +114,7 @@ const FieldMappingPanel = ({
   // Get field type tag color
   const getFieldTypeColor = (fieldType) => {
     const colorMap = {
-      NUMERIC: "blue",
+      NUMERIC: "red",
       QUALITATIVE: "purple",
       CONTROL_TEST: "green",
       MELTING_POINT: "teal",

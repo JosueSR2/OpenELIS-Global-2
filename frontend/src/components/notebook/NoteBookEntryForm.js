@@ -1143,7 +1143,7 @@ const NoteBookEntryForm = () => {
                                       (st) => st.id == page.sampleTypeId,
                                     );
                                     return sampleType ? (
-                                      <Tag type="blue" size="sm">
+                                      <Tag type="red" size="sm">
                                         {sampleType.value}
                                       </Tag>
                                     ) : (
@@ -1223,7 +1223,7 @@ const NoteBookEntryForm = () => {
                                       return test ? (
                                         <Tag
                                           key={testIndex}
-                                          type="blue"
+                                          type="red"
                                           size="sm"
                                         >
                                           {test.value}

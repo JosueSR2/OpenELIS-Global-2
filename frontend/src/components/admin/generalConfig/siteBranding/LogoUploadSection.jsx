@@ -20,14 +20,13 @@ import {
   Button,
   InlineNotification,
   Checkbox,
-  InlineLoading,
+  Modal,
 } from "@carbon/react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { postToOpenElisServerFormData } from "../../../utils/Utils";
 import { TrashCan } from "@carbon/icons-react";
 import { removeLogo } from "../../../utils/BrandingUtils";
 import config from "../../../../config.json";
-import { Modal } from "@carbon/react";
 
 const LogoUploadSection = forwardRef(function LogoUploadSection(
   {
@@ -83,7 +82,8 @@ const LogoUploadSection = forwardRef(function LogoUploadSection(
         postToOpenElisServerFormData(
           `/rest/site-branding/logo/${type}`,
           formData,
-          (status) => {
+          (status, extraParams, responseData, errorMessage) => {
+            void extraParams;
             setIsUploading(false);
             if (status === 200 || status === 201) {
               const logoUrl = `/rest/site-branding/logo/${type}`;
@@ -94,8 +94,14 @@ const LogoUploadSection = forwardRef(function LogoUploadSection(
               }
               resolve({ success: true });
             } else {
-              setError(intl.formatMessage({ id: "site.branding.save.error" }));
-              reject(new Error("Upload failed"));
+              const serverMessage =
+                errorMessage || responseData?.error || responseData?.message;
+              setError(
+                serverMessage
+                  ? `${intl.formatMessage({ id: "site.branding.save.error" })}: ${serverMessage}`
+                  : intl.formatMessage({ id: "site.branding.save.error" }),
+              );
+              reject(new Error(serverMessage || "Upload failed"));
             }
           },
         );
@@ -152,20 +158,10 @@ const LogoUploadSection = forwardRef(function LogoUploadSection(
     setShowRemoveConfirm(false);
     setError(null);
 
-    removeLogo(type, async (response, extraParams) => {
+    removeLogo(type, async (response) => {
       try {
         const status = response.status || 200;
         if (status === 200 || status === 204) {
-          // Parse response body if available
-          let responseData = null;
-          if (response.ok) {
-            try {
-              responseData = await response.json();
-            } catch (e) {
-              // Response might not have JSON body
-            }
-          }
-
           setFile(null);
           setPreview(null);
           if (onLogoRemoved) {
@@ -330,7 +326,7 @@ const LogoUploadSection = forwardRef(function LogoUploadSection(
               style={{
                 marginTop: "0.5rem",
                 fontStyle: "italic",
-                color: "#0f62fe",
+                color: "#ec3912",
               }}
             >
               <FormattedMessage

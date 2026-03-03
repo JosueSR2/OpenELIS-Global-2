@@ -318,7 +318,7 @@ export default function Workplan(props) {
                               <TableCell>
                                 {showAccessionNumber && (
                                   <Link
-                                    style={{ color: "blue" }}
+                                    style={{ color: "#ec3912" }}
                                     href={
                                       `/result?type=order&doRange=false&source=${sourceTitle}&accessionNumber=` +
                                       row.accessionNumber

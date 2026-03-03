@@ -347,8 +347,8 @@ const PatientPhotoModal = ({
 
         .tab.active {
           background: white;
-          color: #0f62fe;
-          border-bottom-color: #0f62fe;
+          color: #ec3912;
+          border-bottom-color: #ec3912;
         }
 
         .modal-content {
@@ -363,8 +363,8 @@ const PatientPhotoModal = ({
           gap: 0.5rem;
           padding: 0.75rem 1rem;
           background: #fff1f1;
-          border-left: 3px solid #da1e28;
-          color: #da1e28;
+          border-left: 3px solid #ec3912;
+          color: #ec3912;
           margin-bottom: 1rem;
           font-size: 0.875rem;
         }
@@ -380,12 +380,12 @@ const PatientPhotoModal = ({
         }
 
         .dropzone:hover {
-          border-color: #0f62fe;
+          border-color: #ec3912;
           background: #e8f4ff;
         }
 
         .dropzone.active {
-          border-color: #0f62fe;
+          border-color: #ec3912;
           background: #d0e2ff;
         }
 
@@ -457,7 +457,7 @@ const PatientPhotoModal = ({
         }
 
         .capture-btn {
-          background: #0f62fe;
+          background: #ec3912;
           color: white;
         }
 
@@ -467,7 +467,7 @@ const PatientPhotoModal = ({
 
         .remove-btn {
           background: #f4f4f4;
-          color: #da1e28;
+          color: #ec3912;
         }
 
         .remove-btn:hover {
@@ -507,7 +507,7 @@ const PatientPhotoModal = ({
         }
 
         .btn-primary {
-          background: #0f62fe;
+          background: #ec3912;
           color: white;
         }
 
@@ -595,7 +595,7 @@ const PatientPhotoUploader = () => {
           }}
           onMouseEnter={(e) => {
             if (!patientPhoto) {
-              e.currentTarget.style.borderColor = "#0f62fe";
+              e.currentTarget.style.borderColor = "#ec3912";
               e.currentTarget.style.background = "#e8f4ff";
             }
           }}
@@ -640,7 +640,7 @@ const PatientPhotoUploader = () => {
             position: "fixed",
             top: "1rem",
             right: "1rem",
-            background: "#0f62fe",
+            background: "#ec3912",
             color: "white",
             padding: "1rem",
             borderRadius: "4px",

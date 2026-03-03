@@ -1,20 +1,12 @@
-// Define a cache name for versioning your cache
-const CACHE_NAME = "my-cache-v1";
+const CACHE_NAME = "lims-ui-v20260302-1";
+const CACHEABLE_EXTENSIONS =
+  /\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$/i;
 
-// Cache assets during the install phase
 self.addEventListener("install", (event) => {
   console.log("[Service Worker] Install");
-  event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => {
-        return cache.addAll(["/", "/index.html", "/styles.css"]);
-      })
-      .then(() => self.skipWaiting()), // Skip waiting to activate new service worker immediately
-  );
+  self.skipWaiting();
 });
 
-// Clean up old caches during the activate phase
 self.addEventListener("activate", (event) => {
   console.log("[Service Worker] Activate");
   event.waitUntil(
@@ -34,20 +26,61 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+self.addEventListener("fetch", (event) => {
+  if (event.request.method !== "GET") {
+    return;
+  }
+
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.origin !== self.location.origin) {
+    return;
+  }
+
+  const isDocumentRequest =
+    event.request.mode === "navigate" || requestUrl.pathname.endsWith(".html");
+
+  // Always fetch fresh HTML to avoid serving stale app shells/colors from cache.
+  if (isDocumentRequest) {
+    event.respondWith(fetch(event.request, { cache: "no-store" }));
+    return;
+  }
+
+  if (!CACHEABLE_EXTENSIONS.test(requestUrl.pathname)) {
+    return;
+  }
+
+  // Serve cached static assets when available, then refresh in background.
+  event.respondWith(
+    caches.open(CACHE_NAME).then(async (cache) => {
+      const cachedResponse = await cache.match(event.request);
+      const networkFetch = fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            cache.put(event.request, networkResponse.clone());
+          }
+          return networkResponse;
+        })
+        .catch(() => cachedResponse);
+
+      return cachedResponse || networkFetch;
+    }),
+  );
+});
+
 // Listen for push events and display notifications
 self.addEventListener("push", (event) => {
   console.log("[Service Worker] Push Received", event);
   if (event.data) {
     const data = event.data.json();
     const notificationOptions = {
-      body: data.body || "Message Received from OpenELIS",
+      body: data.body || "Message Received",
       tag: data.external_id || "default-tag",
-      icon: "images/likdicom_logo.png",
+      icon: "images/logo.png",
     };
 
     event.waitUntil(
       self.registration.showNotification(
-        "OpenELIS Message Received",
+        "LIMS Notification",
         notificationOptions,
       ),
     );

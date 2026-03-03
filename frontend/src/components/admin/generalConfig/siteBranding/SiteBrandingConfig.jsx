@@ -28,7 +28,6 @@ import {
   NotificationKinds,
 } from "../../../common/CustomNotification";
 import { FormattedMessage, useIntl } from "react-intl";
-import { useHistory } from "react-router-dom";
 import PageBreadCrumb from "../../../common/PageBreadCrumb";
 import LogoUploadSection from "./LogoUploadSection";
 import ColorPickerSection from "./ColorPickerSection";
@@ -36,7 +35,6 @@ import config from "../../../../config.json";
 
 function SiteBrandingConfig() {
   const intl = useIntl();
-  const history = useHistory();
   const { notificationVisible, setNotificationVisible, addNotification } =
     useContext(NotificationContext);
 
@@ -90,9 +88,9 @@ function SiteBrandingConfig() {
       } else {
         // Handle error - use default values
         const defaultBranding = {
-          headerColor: "#295785",
-          primaryColor: "#0f62fe",
-          secondaryColor: "#393939",
+          headerColor: "#ec3912",
+          primaryColor: "#f46243",
+          secondaryColor: "#f25434",
           colorMode: "light",
           useHeaderLogoForLogin: false,
         };
@@ -259,7 +257,7 @@ function SiteBrandingConfig() {
   };
 
   // Handler for when a file is selected in LogoUploadSection
-  const handleFileSelected = (file, type) => {
+  const handleFileSelected = () => {
     setHasPendingFiles(true);
   };
 
@@ -274,9 +272,9 @@ function SiteBrandingConfig() {
     // Colors must be provided as database requires NOT NULL
     const dataToSend = {
       id: branding.id,
-      headerColor: branding.headerColor?.trim() || "#295785",
-      primaryColor: branding.primaryColor?.trim() || "#0f62fe",
-      secondaryColor: branding.secondaryColor?.trim() || "#393939",
+      headerColor: branding.headerColor?.trim() || "#ec3912",
+      primaryColor: branding.primaryColor?.trim() || "#f46243",
+      secondaryColor: branding.secondaryColor?.trim() || "#f25434",
       colorMode: branding.colorMode?.trim() || "light",
       useHeaderLogoForLogin: branding.useHeaderLogoForLogin || false,
       // Do not include headerLogoUrl, loginLogoUrl, or faviconUrl
@@ -285,7 +283,7 @@ function SiteBrandingConfig() {
 
     // Save branding configuration FIRST (including useHeaderLogoForLogin flag)
     // This must happen before logo uploads so the backend has correct state
-    updateBranding(dataToSend, async (status, errorMessage, responseData) => {
+    updateBranding(dataToSend, async (status, errorMessage) => {
       if (status !== 200 && status !== 201) {
         setIsSaving(false);
         console.error("Save failed:", { status, errorMessage, dataToSend });
@@ -393,23 +391,23 @@ function SiteBrandingConfig() {
         // Reset CSS custom properties to defaults
         document.documentElement.style.setProperty(
           "--site-branding-header",
-          "#295785",
+          "#ec3912",
         );
         document.documentElement.style.setProperty(
           "--cds-interactive-01",
-          "#0f62fe",
+          "#f46243",
         );
         document.documentElement.style.setProperty(
           "--cds-interactive-02",
-          "#393939",
+          "#f25434",
         );
         document.documentElement.style.setProperty(
           "--site-branding-primary",
-          "#0f62fe",
+          "#f46243",
         );
         document.documentElement.style.setProperty(
           "--site-branding-secondary",
-          "#393939",
+          "#f25434",
         );
 
         // Reset favicon
@@ -471,7 +469,7 @@ function SiteBrandingConfig() {
             type="header"
             currentLogoUrl={branding?.headerLogoUrl}
             onFileSelected={handleFileSelected}
-            onLogoUploaded={(url) => {
+            onLogoUploaded={() => {
               // Don't call loadBranding() here - handleSave calls it once after all uploads complete
               // Just dispatch event to notify Header to reload branding
               window.dispatchEvent(new CustomEvent("branding-updated"));
@@ -494,7 +492,7 @@ function SiteBrandingConfig() {
             currentLogoUrl={branding?.loginLogoUrl}
             useHeaderLogoForLogin={branding?.useHeaderLogoForLogin || false}
             onFileSelected={handleFileSelected}
-            onLogoUploaded={(url) => {
+            onLogoUploaded={() => {
               // Don't call loadBranding() here - handleSave calls it once after all uploads complete
               // Just dispatch event to notify Header to reload branding
               window.dispatchEvent(new CustomEvent("branding-updated"));
@@ -522,9 +520,9 @@ function SiteBrandingConfig() {
             type="favicon"
             currentLogoUrl={branding?.faviconUrl}
             onFileSelected={handleFileSelected}
-            onLogoUploaded={(url) => {
+            onLogoUploaded={() => {
               // Update favicon in document head
-              updateFavicon(url);
+              updateFavicon(`/rest/site-branding/logo/favicon`);
               // Don't call loadBranding() here - handleSave calls it once after all uploads complete
               // Just dispatch event to notify Header to reload branding
               window.dispatchEvent(new CustomEvent("branding-updated"));
@@ -549,7 +547,7 @@ function SiteBrandingConfig() {
             description={intl.formatMessage({
               id: "site.branding.header.color.description",
             })}
-            value={branding?.headerColor || "#295785"}
+            value={branding?.headerColor || "#ec3912"}
             onChange={(color) => {
               setBranding((prev) => ({ ...prev, headerColor: color }));
               // Apply color immediately for preview
@@ -569,7 +567,7 @@ function SiteBrandingConfig() {
             description={intl.formatMessage({
               id: "site.branding.primary.color.description",
             })}
-            value={branding?.primaryColor || "#0f62fe"}
+            value={branding?.primaryColor || "#f46243"}
             onChange={(color) => {
               setBranding((prev) => ({ ...prev, primaryColor: color }));
               // Apply color immediately for preview
@@ -593,7 +591,7 @@ function SiteBrandingConfig() {
             description={intl.formatMessage({
               id: "site.branding.secondary.color.description",
             })}
-            value={branding?.secondaryColor || "#393939"}
+            value={branding?.secondaryColor || "#f25434"}
             onChange={(color) => {
               setBranding((prev) => ({ ...prev, secondaryColor: color }));
               // Apply color immediately for preview
@@ -648,7 +646,7 @@ function SiteBrandingConfig() {
                 style={{
                   marginTop: "1rem",
                   fontStyle: "italic",
-                  color: "#da1e28",
+                  color: "#ec3912",
                 }}
               >
                 <FormattedMessage id="site.branding.unsaved.changes.warning" />

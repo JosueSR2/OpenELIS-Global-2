@@ -460,7 +460,7 @@ describe("Site Branding - User Story 1: Access Site Branding Configuration", fun
   //   cy.get("#header-logo img", { timeout: 10000 }).should("be.visible");
   //   cy.get("#header-logo img")
   //     .should("have.attr", "src")
-  //     .and("include", "openelis_logo.png");
+  //     .and("include", "logo.png");
   // });
 
   // /**
@@ -526,7 +526,7 @@ describe("Site Branding - User Story 1: Access Site Branding Configuration", fun
   //   cy.get("#header-logo img", { timeout: 10000 }).should("be.visible");
   //   cy.get("#header-logo img")
   //     .should("have.attr", "src")
-  //     .and("include", "openelis_logo.png");
+  //     .and("include", "logo.png");
   // });
 
   // /**

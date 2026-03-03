@@ -44,7 +44,7 @@ import {
 import SlideOverNotifications from "../notifications/SlideOverNotifications";
 import { getFromOpenElisServer, putToOpenElisServer } from "../utils/Utils";
 import SearchBar from "./search/searchBar";
-import { getBranding } from "../utils/BrandingUtils";
+import { getRuntimeBranding } from "../utils/BrandingUtils";
 import config from "../../config.json";
 
 function OEHeader({
@@ -97,87 +97,6 @@ function OEHeader({
     window.scrollTo(0, scrollRef.current);
   }, []);
 
-  // determine if we are inside the analyzers workflow; this is the
-  // portion of the app that should present the "minimalist" look and
-  // feel requested by the user.  We only look at the client-side route
-  // prefix, which is stable during navigation.
-  const isAnalyzerContext =
-    location.pathname.startsWith("/analyzers") ||
-    location.pathname.startsWith("/AnalyzerManagement");
-
-  // --- minimal header variant ------------------------------------------------
-  // A lightweight header with logo + user/language controls.  It omits the
-  // search box, notification bell, side‑nav toggle, help menu, etc.  This
-  // gives an uncluttered workspace when users are performing analyzer work.
-  if (isAnalyzerContext) {
-    return (
-      <Header aria-label="OpenELIS" role="banner">
-        <HeaderName href="/" prefix="">
-          <span id="header-logo">{logo()}</span>
-        </HeaderName>
-        <HeaderGlobalBar>
-          {/* user/logout action */}
-          <HeaderGlobalAction
-            id="user-Icon"
-            aria-label={intl.formatMessage({ id: "header.label.logout" })}
-            onClick={logout}
-          >
-            <Logout size={20} />
-          </HeaderGlobalAction>
-          {/* language switcher opens the same user panel used elsewhere */}
-          <HeaderGlobalAction
-            aria-label={intl.formatMessage({ id: "header.label.selectlocale" })}
-            onClick={() => handlePanelToggle(switchCollapsed ? "user" : "")}
-            ref={userSwitchRef}
-          >
-            <Language size={20} />
-          </HeaderGlobalAction>
-        </HeaderGlobalBar>
-
-        {/* reuse the existing HeaderPanel for logout + language select */}
-        <HeaderPanel
-          aria-label="Header Panel"
-          expanded={!switchCollapsed}
-          className="headerPanel"
-          ref={headerPanelRef}
-        >
-          <ul>
-            <li
-              data-cy="logOut"
-              className="userDetails clickableUserDetails"
-              onClick={logout}
-            >
-              <Logout style={{ marginRight: "3px" }} />
-              <FormattedMessage id="header.label.logout" />
-            </li>
-            <li className="userDetails">
-              <Theme theme="white">
-                <Select
-                  id="selector"
-                  name="selectLocale"
-                  defaultValue={localStorage.getItem("locale") || "en"}
-                  onChange={(evt) => {
-                    const newLang = evt.target.value;
-                    onChangeLanguage(newLang);
-                  }}
-                >
-                  {Object.keys(languages).map((lang) => (
-                    <SelectItem
-                      key={lang}
-                      value={lang}
-                      text={languages[lang].label}
-                    />
-                  ))}
-                </Select>
-              </Theme>
-            </li>
-          </ul>
-        </HeaderPanel>
-      </Header>
-    );
-  }
-  // --- end minimal header ----------------------------------------------------
-
   useEffect(() => {
     if (!userSessionDetails.authenticated) {
       return;
@@ -190,7 +109,7 @@ function OEHeader({
   // Load branding configuration for header logo
   // Colors are handled by App.js
   const loadHeaderLogo = () => {
-    getBranding((response) => {
+    getRuntimeBranding((response) => {
       if (response && response.headerLogoUrl) {
         setHeaderLogoUrl(response.headerLogoUrl);
         setLogoVersion((prev) => prev + 1);
@@ -350,9 +269,10 @@ function OEHeader({
   function logo() {
     // Use custom header logo if available, otherwise use default
     // Add cache-busting parameter to prevent stale logo display after upload
+    const defaultLogoSrc = `../images/logo.png?v=likdicom`;
     const logoSrc = headerLogoUrl
       ? `${config.serverBaseUrl}${headerLogoUrl}?v=${logoVersion}`
-      : `../images/likdicom_logo.png`;
+      : defaultLogoSrc;
 
     return (
       <>
@@ -360,11 +280,11 @@ function OEHeader({
           <img
             className="logo"
             src={logoSrc}
-            alt="likdicom logo"
+            alt="Logo"
             style={{ objectFit: "contain", maxHeight: "71px" }}
             onError={(e) => {
               // Fallback to default logo if custom logo fails to load
-              e.target.src = `../images/likdicom_logo.png`;
+              e.target.src = defaultLogoSrc;
             }}
           />
         </picture>
@@ -763,7 +683,7 @@ function OEHeader({
                             position: "absolute",
                             top: "-5px",
                             right: "-5px",
-                            backgroundColor: "red",
+                            backgroundColor: "#ec3912",
                             color: "white",
                             borderRadius: "50%",
                             width: "22px",

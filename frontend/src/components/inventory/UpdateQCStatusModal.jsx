@@ -155,7 +155,7 @@ const UpdateQCStatusModal = ({ open, onClose, onSave, lot }) => {
         />
 
         {error && (
-          <div className="error-message" style={{ color: "#da1e28" }}>
+          <div className="error-message" style={{ color: "#ec3912" }}>
             {error}
           </div>
         )}

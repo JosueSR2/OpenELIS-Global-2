@@ -23,18 +23,18 @@
 }
 
 .dropzone:hover {
-  border-color: #0f62fe;
-  background-color: #e5f6ff;
+  border-color: #ec3912;
+  background-color: #fbe4df;
 }
 
 .dropzone-active {
-  border-color: #0f62fe;
-  background-color: #d0e2ff;
+  border-color: #ec3912;
+  background-color: #f9aca0;
   border-style: solid;
 }
 
 .dropzone-icon {
-  color: #0f62fe;
+  color: #ec3912;
   opacity: 0.7;
 }
 

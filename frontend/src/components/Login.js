@@ -20,7 +20,7 @@ import { Formik } from "formik";
 import { AlertDialog, NotificationKinds } from "./common/CustomNotification";
 import UserSessionDetailsContext from "../UserSessionDetailsContext";
 import { ConfigurationContext, NotificationContext } from "./layout/Layout";
-import { getBranding } from "./utils/BrandingUtils";
+import { getRuntimeBranding } from "./utils/BrandingUtils";
 
 function Login(props) {
   const { notificationVisible, addNotification, setNotificationVisible } =
@@ -69,7 +69,7 @@ function Login(props) {
   // Load branding configuration for login logo
   // Colors are handled by App.js
   useEffect(() => {
-    getBranding((response) => {
+    getRuntimeBranding((response) => {
       if (response) {
         // Check useHeaderLogoForLogin flag
         if (response.useHeaderLogoForLogin && response.headerLogoUrl) {
@@ -95,9 +95,10 @@ function Login(props) {
 
   const loginMessage = () => {
     // Add cache-busting parameter to prevent stale logo display after upload
+    const defaultLogoSrc = `images/logo.png?v=likdicom`;
     const logoSrc = loginLogoUrl
       ? `${config.serverBaseUrl}${loginLogoUrl}?v=${logoVersion}`
-      : `images/likdicom_logo_full.png`;
+      : defaultLogoSrc;
 
     return (
       <>
@@ -106,13 +107,13 @@ function Login(props) {
           <picture>
             <img
               src={logoSrc}
-              alt="likdicom full logo"
+              alt="LikDiCom logo"
               width="300"
               height="56"
               style={{ objectFit: "contain" }}
               onError={(e) => {
                 // Fallback to default logo if custom logo fails to load
-                e.target.src = `images/likdicom_logo_full.png`;
+                e.target.src = defaultLogoSrc;
               }}
             />
           </picture>
@@ -269,7 +270,7 @@ function Login(props) {
                               <FormattedMessage id="login.title" />
                             </Heading>
                           </FormLabel>
-                          {configurationProperties?.useFormLogin == "true" && (
+                          {(configurationProperties?.useFormLogin ?? "true") == "true" && (
                             <>
                               <TextInput
                                 id="loginName"

@@ -14,6 +14,7 @@ import {
   Tile,
   Button,
   Tag,
+  InlineNotification,
   OverflowMenu,
   OverflowMenuItem,
   Dropdown,
@@ -37,6 +38,7 @@ const AnalyzersList = () => {
   const [analyzers, setAnalyzers] = useState([]);
   const [filteredAnalyzers, setFilteredAnalyzers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     status: "",
@@ -69,7 +71,30 @@ const AnalyzersList = () => {
 
   const loadAnalyzers = useCallback((searchFilters = {}) => {
     setLoading(true);
+    setLoadError("");
     getAnalyzers(searchFilters, (data) => {
+      if (data === undefined) {
+        setAnalyzers([]);
+        setFilteredAnalyzers([]);
+        setStats({
+          total: 0,
+          active: 0,
+          inactive: 0,
+          pluginWarnings: 0,
+        });
+        setLoadError(
+          intl.formatMessage({
+            id: "analyzer.list.loadError.message",
+          }),
+        );
+        setLoading(false);
+        return;
+      }
+
+      if (data?.error) {
+        setLoadError(data.message || data.error);
+      }
+
       const list = data && Array.isArray(data.analyzers) ? data.analyzers : [];
       setAnalyzers(list);
       setFilteredAnalyzers(list);
@@ -88,7 +113,7 @@ const AnalyzersList = () => {
       });
       setLoading(false);
     });
-  }, []);
+  }, [intl]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -265,6 +290,19 @@ const AnalyzersList = () => {
           </Button>
         </div>
       </div>
+
+      {loadError && (
+        <InlineNotification
+          kind="error"
+          lowContrast
+          hideCloseButton
+          title={intl.formatMessage({
+            id: "analyzer.list.loadError.title",
+          })}
+          subtitle={loadError}
+          style={{ marginBottom: "1rem" }}
+        />
+      )}
 
       <Grid className="analyzers-list-stats" data-testid="analyzers-list-stats">
         <Column lg={4} md={2} sm={2}>
@@ -485,7 +523,7 @@ const AnalyzersList = () => {
                               const statusColorMap = {
                                 INACTIVE: "gray",
                                 SETUP: "gray",
-                                VALIDATION: "blue",
+                                VALIDATION: "red",
                                 ACTIVE: "green",
                                 ERROR_PENDING: "red", // Carbon doesn't support "orange", use "red" for error states
                                 OFFLINE: "red",

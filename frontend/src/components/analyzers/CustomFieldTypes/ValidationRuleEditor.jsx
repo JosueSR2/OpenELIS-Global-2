@@ -510,7 +510,7 @@ const ValidationRuleEditor = ({
                 {enumValues.map((value, index) => (
                   <Tag
                     key={index}
-                    type="blue"
+                    type="red"
                     filter
                     onClose={() => handleRemoveEnumValue(value)}
                     data-testid={`enum-value-tag-${value}`}

@@ -320,7 +320,7 @@ const MappingPanel = ({
                           </div>
                         }
                       >
-                        <Tag type="blue" size="sm">
+                        <Tag type="red" size="sm">
                           {rule.ruleName}
                         </Tag>
                       </Tooltip>

@@ -30,6 +30,19 @@ function SecureRoute(props) {
 
   const { configurationProperties } = useContext(ConfigurationContext);
 
+  const hasGlobalAdminAlias = (roles = []) =>
+    roles.includes(Roles.GLOBAL_ADMIN) || roles.includes(Roles.ADMIN);
+
+  const roleMatches = (requiredRole, userRoles = []) => {
+    if (!requiredRole) {
+      return true;
+    }
+    if (requiredRole === Roles.GLOBAL_ADMIN || requiredRole === Roles.ADMIN) {
+      return hasGlobalAdminAlias(userRoles);
+    }
+    return userRoles.includes(requiredRole);
+  };
+
   useEffect(() => {
     setLoading(!errorLoadingSessionDetails && isCheckingLogin());
     if (userSessionDetails.authenticated) {
@@ -39,7 +52,7 @@ function SecureRoute(props) {
         if (
           configurationProperties.REQUIRE_LAB_UNIT_AT_LOGIN === "true" &&
           !userSessionDetails.loginLabUnit &&
-          !userSessionDetails.roles.includes(Roles.GLOBAL_ADMIN)
+          !hasGlobalAdminAlias(userSessionDetails.roles || [])
         ) {
           window.location.href = "/landing";
         }
@@ -60,18 +73,17 @@ function SecureRoute(props) {
         };
         confirmAlert(options);
       }
-      setPermissionGranted(hasPermission());
+      setPermissionGranted(hasPermission(userSessionDetails));
     } else if ("authenticated" in userSessionDetails) {
       window.location.href = config.loginRedirect;
     }
-  }, [userSessionDetails, errorLoadingSessionDetails]);
+  }, [userSessionDetails, errorLoadingSessionDetails, configurationProperties]);
 
   const hasPermission = (userDetails = userSessionDetails) => {
+    const userRoles = userDetails.roles || [];
     var hasRole =
       !props.role ||
-      []
-        .concat(props.role)
-        .some((role) => userDetails.roles && userDetails.roles.includes(role));
+      [].concat(props.role).some((role) => roleMatches(role, userRoles));
     var containsLabUnitRole = false;
     if (props.labUnitRole) {
       Object.keys(props.labUnitRole).forEach((labunit) => {

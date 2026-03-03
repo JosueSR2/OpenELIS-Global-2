@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
-import { Content, Theme } from "@carbon/react";
+import { Content } from "@carbon/react";
 import UserSessionDetailsContext from "../../UserSessionDetailsContext";
 import { getFromOpenElisServer } from "../utils/Utils";
 import { useSideNavPreference } from "./useSideNavPreference";
@@ -69,20 +69,19 @@ export default function Layout(props) {
   };
 
   const fetchConfigurationProperties = (res) => {
+    console.log("[Layout] fetchConfigurationProperties received:", res);
     setConfigurationProperties(res);
   };
 
   useEffect(() => {
     if (userSessionDetails.authenticated) {
-      getFromOpenElisServer(
-        "/rest/configuration-properties",
-        fetchConfigurationProperties,
-      );
+      const endpoint = "/rest/configuration-properties";
+      console.log("[Layout] Fetching authenticated config from:", endpoint);
+      getFromOpenElisServer(endpoint, fetchConfigurationProperties);
     } else {
-      getFromOpenElisServer(
-        "/rest/open-configuration-properties",
-        fetchConfigurationProperties,
-      );
+      const endpoint = "/rest/open-configuration-properties";
+      console.log("[Layout] Fetching unauthenticated config from:", endpoint);
+      getFromOpenElisServer(endpoint, fetchConfigurationProperties);
     }
     setResetConfig(false);
   }, [userSessionDetails.authenticated, resetConfig]);
@@ -116,16 +115,14 @@ export default function Layout(props) {
             defaultMode={layoutConfig.defaultMode}
             storageKeyPrefix={layoutConfig.storageKeyPrefix}
           />
-          {/* Theme wrapper creates white theme zone for content area */}
-          {/* Global SCSS theme = blue header/nav, this = light content */}
-          <Theme theme="white">
-            <Content
-              data-testid="content-wrapper"
-              className={isLocked ? "content-nav-locked" : ""}
-            >
-              {children}
-            </Content>
-          </Theme>
+          {/* Keep global theme (custom branding colors) for content area */}
+          {/* DO NOT wrap in Theme="white" - it removes custom branding styles */}
+          <Content
+            data-testid="content-wrapper"
+            className={isLocked ? "content-nav-locked" : ""}
+          >
+            {children}
+          </Content>
           <Footer />
         </div>
       </NotificationContext.Provider>

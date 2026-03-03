@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { IntlProvider } from "react-intl";
-import { confirmAlert } from "react-confirm-alert";
 import Layout from "./components/layout/Layout";
 import Home from "./components/Home";
 import StorageDashboard from "./components/storage/StorageDashboard";
@@ -64,6 +63,7 @@ import ProgramDashboard from "./components/program/programDashboard.jsx";
 import ProgramCaseView from "./components/program/programCaseView.jsx";
 import SampleManagement from "./components/sampleManagement/SampleManagement";
 import InventoryManagement from "./components/inventory/InventoryManagement";
+import GlobalErrorBoundary from "./components/common/GlobalErrorBoundary";
 
 export default function App() {
   const defaultLocale =
@@ -123,7 +123,7 @@ export default function App() {
             }
             setErrorLoadingSessionDetails(false);
             return jsonResp;
-          } catch (parseError) {
+          } catch {
             // If response is not JSON (e.g., HTML error page), treat as unauthenticated
             console.warn("Response is not JSON, treating as unauthenticated");
             const defaultSession = { authenticated: false, sessionId: null };
@@ -240,6 +240,30 @@ export default function App() {
     return !("authenticated" in userSessionDetails);
   };
 
+  const getUiMessage = (id, fallback) => messages?.[id] || fallback;
+
+  const errorMessages = {
+    fatalTitle: getUiMessage(
+      "app.error.fatal.title",
+      "Unexpected application error",
+    ),
+    fatalDescription: getUiMessage(
+      "app.error.fatal.description",
+      "An unrecoverable error occurred while rendering this page.",
+    ),
+    runtimeTitle: getUiMessage("app.error.runtime.title", "Runtime error"),
+    runtimeFallbackMessage: getUiMessage(
+      "app.error.runtime.fallback",
+      "An unexpected error occurred.",
+    ),
+    dismissLabel: getUiMessage("app.error.dismiss", "Dismiss"),
+    reloadLabel: getUiMessage("app.error.reload", "Reload"),
+    detailsLabel: getUiMessage(
+      "app.error.technical.details",
+      "Technical details",
+    ),
+  };
+
   return (
     <IntlProvider
       locale={locale}
@@ -256,7 +280,7 @@ export default function App() {
           refresh,
         }}
       >
-        <>
+        <GlobalErrorBoundary {...errorMessages}>
           <Router>
             <Layout onChangeLanguage={onChangeLanguage}>
               <Switch>
@@ -521,43 +545,97 @@ export default function App() {
                   path="/analyzers"
                   exact
                   component={() => <AnalyzersPage />}
-                  role={Roles.GLOBAL_ADMIN}
-                />
-                <SecureRoute
-                  path="/analyzers/:id/mappings"
-                  exact
-                  component={FieldMapping}
-                  role={Roles.GLOBAL_ADMIN}
+                  role={[
+                    Roles.GLOBAL_ADMIN,
+                    Roles.ANALYSER_IMPORT,
+                    Roles.RESULTS,
+                  ]}
                 />
                 <SecureRoute
                   path="/analyzers/errors"
                   exact
                   component={() => <ErrorDashboardPage />}
-                  role={Roles.LAB_SUPERVISOR}
+                  role={[
+                    Roles.RESULTS,
+                    Roles.ANALYSER_IMPORT,
+                    Roles.GLOBAL_ADMIN,
+                  ]}
+                />
+                <SecureRoute
+                  path="/analyzers/:id/mappings"
+                  exact
+                  component={FieldMapping}
+                  role={[
+                    Roles.GLOBAL_ADMIN,
+                    Roles.ANALYSER_IMPORT,
+                    Roles.RESULTS,
+                  ]}
                 />
                 <SecureRoute
                   path="/analyzers/custom-field-types"
                   exact
                   component={() => <CustomFieldTypeManagementPage />}
-                  role={Roles.GLOBAL_ADMIN}
+                  role={[Roles.GLOBAL_ADMIN, Roles.ANALYSER_IMPORT]}
                 />
                 <SecureRoute
                   path="/analyzers/qc"
                   exact
                   component={() => <QCDashboardPlaceholder />}
-                  role={Roles.LAB_SUPERVISOR}
+                  role={[
+                    Roles.RESULTS,
+                    Roles.ANALYSER_IMPORT,
+                    Roles.GLOBAL_ADMIN,
+                  ]}
                 />
                 <SecureRoute
                   path="/analyzers/qc/alerts"
                   exact
                   component={() => <QCAlertsPlaceholder />}
-                  role={Roles.LAB_SUPERVISOR}
+                  role={[
+                    Roles.RESULTS,
+                    Roles.ANALYSER_IMPORT,
+                    Roles.GLOBAL_ADMIN,
+                  ]}
                 />
                 <SecureRoute
                   path="/analyzers/qc/corrective-actions"
                   exact
                   component={() => <CorrectiveActionsPlaceholder />}
-                  role={Roles.LAB_SUPERVISOR}
+                  role={[
+                    Roles.RESULTS,
+                    Roles.ANALYSER_IMPORT,
+                    Roles.GLOBAL_ADMIN,
+                  ]}
+                />
+                <SecureRoute
+                  path="/AnalyzerManagement"
+                  exact
+                  component={() => <AnalyzersPage />}
+                  role={[
+                    Roles.GLOBAL_ADMIN,
+                    Roles.ANALYSER_IMPORT,
+                    Roles.RESULTS,
+                  ]}
+                />
+                <SecureRoute
+                  path="/AnalyzerManagement/:id/mappings"
+                  exact
+                  component={FieldMapping}
+                  role={[
+                    Roles.GLOBAL_ADMIN,
+                    Roles.ANALYSER_IMPORT,
+                    Roles.RESULTS,
+                  ]}
+                />
+                <SecureRoute
+                  path="/AnalyzerErrorDashboard"
+                  exact
+                  component={() => <ErrorDashboardPage />}
+                  role={[
+                    Roles.RESULTS,
+                    Roles.ANALYSER_IMPORT,
+                    Roles.GLOBAL_ADMIN,
+                  ]}
                 />
                 <SecureRoute
                   path="/PatientHistory"
@@ -737,7 +815,7 @@ export default function App() {
               </Switch>
             </Layout>
           </Router>
-        </>
+        </GlobalErrorBoundary>
       </UserSessionDetailsContext.Provider>
     </IntlProvider>
   );

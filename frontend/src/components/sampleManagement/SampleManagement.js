@@ -463,7 +463,7 @@ export default function SampleManagement() {
                       </span>
                       {aliquotStats.aliquotCount > 0 && (
                         <span>
-                          <Tag type="blue" size="sm">
+                          <Tag type="red" size="sm">
                             {aliquotStats.aliquotCount}{" "}
                             <FormattedMessage id="sample.management.results.aliquots" />
                           </Tag>
@@ -480,7 +480,7 @@ export default function SampleManagement() {
                             <span
                               style={{
                                 marginLeft: "0.25rem",
-                                color: "#0f62fe",
+                                color: "#ec3912",
                               }}
                             >
                               ({aliquotStats.selectedAliquotCount}{" "}

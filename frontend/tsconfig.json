@@ -6,6 +6,8 @@
     "jsx": "react",
     "skipLibCheck": true,
     "moduleResolution": "node",
+    "declaration": false,
+    "isolatedModules": true,
     "lib": [
       "dom",
       "es5",
@@ -19,6 +21,13 @@
     "resolveJsonModule": true,
     "noEmit": true,
     "strict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "strictFunctionTypes": false,
+    "strictBindCallApply": false,
+    "strictPropertyInitialization": false,
+    "noImplicitThis": false,
+    "alwaysStrict": false,
     "forceConsistentCasingInFileNames": true,
     "target": "esnext"
   }

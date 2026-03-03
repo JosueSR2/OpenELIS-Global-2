@@ -393,7 +393,7 @@ function SampleResultsTable({
       return "red";
     }
     if (statusLower.includes("pending") || statusLower.includes("waiting")) {
-      return "blue";
+      return "red";
     }
     if (statusLower.includes("in progress") || statusLower.includes("active")) {
       return "cyan";
@@ -511,8 +511,8 @@ function SampleResultsTable({
                       {...getRowProps({ row })}
                       style={{
                         // Add subtle left border for aliquots
-                        borderLeft: isAliquotRow ? "3px solid #0f62fe" : "none",
-                        backgroundColor: isAliquotRow ? "#f0f7ff" : "inherit",
+                        borderLeft: isAliquotRow ? "3px solid #ec3912" : "none",
+                        backgroundColor: isAliquotRow ? "#fbe4df" : "inherit",
                       }}
                     >
                       <TableSelectRow

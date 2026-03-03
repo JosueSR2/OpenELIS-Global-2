@@ -1,8 +1,10 @@
 import config from "../../config.json";
 
 export const getFromOpenElisServer = (endPoint, callback, signal = null) => {
+  const fullUrl = config.serverBaseUrl + endPoint;
+  console.log("[Utils] getFromOpenElisServer fetch URL:", fullUrl);
   fetch(
-    config.serverBaseUrl + endPoint,
+    fullUrl,
 
     {
       //includes the browser sessionId in the Header for Authentication on the backend server
@@ -122,12 +124,40 @@ export const postToOpenElisServerFormData = (
       body: formData,
     },
   )
-    .then((response) => response.status)
-    .then((status) => {
-      callback(status, extraParams);
+    .then(async (response) => {
+      const status = response.status;
+      let responseData = null;
+      let errorMessage = null;
+
+      try {
+        const contentType = response.headers.get("content-type") || "";
+        if (contentType.includes("application/json")) {
+          responseData = await response.json();
+        } else if (!response.ok) {
+          const text = await response.text();
+          if (text) {
+            errorMessage = text;
+          }
+        }
+      } catch (parseError) {
+        console.error(
+          "Error parsing FormData response in postToOpenElisServerFormData:",
+          parseError,
+        );
+      }
+
+      if (!response.ok && !errorMessage) {
+        errorMessage =
+          responseData?.error ||
+          responseData?.message ||
+          `Error ${status}: ${response.statusText}`;
+      }
+
+      callback(status, extraParams, responseData, errorMessage);
     })
     .catch((error) => {
       console.error(error);
+      callback(0, extraParams, null, error.message || "Network error");
     });
 };
 
@@ -362,7 +392,15 @@ export const hasRole = (userSessionDetails, role) => {
   if (!userSessionDetails || !userSessionDetails.roles) {
     return false;
   }
-  return userSessionDetails.roles.includes(role);
+  const roles = userSessionDetails.roles;
+  const hasGlobalAdminAlias =
+    roles.includes("Global Administrator") || roles.includes("Admin");
+
+  if (role === "Global Administrator" || role === "Admin") {
+    return hasGlobalAdminAlias;
+  }
+
+  return roles.includes(role);
 };
 
 // this is complicated to enable it to format "smartly" as a person types
@@ -543,6 +581,7 @@ export function urlBase64ToUint8Array(base64String) {
 }
 
 export const Roles = {
+  ADMIN: "Admin",
   GLOBAL_ADMIN: "Global Administrator",
   USER_ACCOUNT_ADMIN: "User Account Administrator",
   AUDIT_TRAIL: "Audit Trail",

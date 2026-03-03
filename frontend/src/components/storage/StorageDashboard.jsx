@@ -2030,7 +2030,7 @@ const StorageDashboard = () => {
         // Capacity is defined - show fraction, percentage, and badge
         const capacityBadge =
           capacityType === "manual" ? (
-            <Tag type="blue" size="sm" style={{ marginLeft: "8px" }}>
+            <Tag type="red" size="sm" style={{ marginLeft: "8px" }}>
               <FormattedMessage
                 id="storage.capacity.manual"
                 defaultMessage="Manual Limit"
@@ -2079,7 +2079,7 @@ const StorageDashboard = () => {
           <Tag
             type={
               device.deviceType === "freezer"
-                ? "blue"
+                ? "red"
                 : device.deviceType === "refrigerator"
                   ? "cyan"
                   : "gray"
@@ -2151,7 +2151,7 @@ const StorageDashboard = () => {
         // Capacity is defined - show fraction, percentage, and badge
         const capacityBadge =
           capacityType === "manual" ? (
-            <Tag type="blue" size="sm" style={{ marginLeft: "8px" }}>
+            <Tag type="red" size="sm" style={{ marginLeft: "8px" }}>
               <FormattedMessage
                 id="storage.capacity.manual"
                 defaultMessage="Manual Limit"

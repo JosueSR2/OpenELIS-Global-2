@@ -113,7 +113,7 @@ const AlertDetailModal = ({
       case "OPEN":
         return <Tag type="red">Open</Tag>;
       case "ACKNOWLEDGED":
-        return <Tag type="blue">Acknowledged</Tag>;
+        return <Tag type="red">Acknowledged</Tag>;
       case "ESCALATED":
         return <Tag type="magenta">Escalated</Tag>;
       case "RESOLVED":

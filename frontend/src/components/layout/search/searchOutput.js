@@ -52,11 +52,11 @@ const SearchOutput = ({ patientData, className = "patientHead" }) => {
                       </span>
                     </div>
                     <div className="tags">
-                      <Tag size="md" type="blue">
+                      <Tag size="md" type="red">
                         <FormattedMessage id="patient.natioanalid" /> :{" "}
                         <strong>{patient.nationalId}</strong>
                       </Tag>
-                      {/* <Tag size="md" type="blue">
+                      {/* <Tag size="md" type="red">
                         <FormattedMessage id="patient.subject.number" /> :{" "}
                         <strong>{patient.subjectNumber}</strong>
                       </Tag> */}

@@ -24,7 +24,7 @@ const SearchBar = (props) => {
     textValue,
     onChange: handleAutocompleteChange,
     onKeyDown: handleAutocompleteKeyDown,
-    setTextValue,
+    setTextValue: setAutocompleteTextValue = () => {},
   } = useAutocomplete({
     value: searchInput,
     suggestions: [],
@@ -38,7 +38,7 @@ const SearchBar = (props) => {
 
   const handleClearSearch = () => {
     setSearchInput("");
-    setTextValue("");
+    setAutocompleteTextValue("");
     setPatientData([]);
   };
 
@@ -137,7 +137,7 @@ const SearchBar = (props) => {
                   >
                     <FormattedMessage id="sidenav.label.results" />:
                   </em>{" "}
-                  <Tag size="sm" type="blue">
+                  <Tag size="sm" type="red">
                     {patientData.length}
                   </Tag>
                 </div>

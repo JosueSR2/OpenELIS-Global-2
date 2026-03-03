@@ -11,9 +11,82 @@ import {
 import config from "../../config.json";
 
 const DEFAULT_BRANDING = {
-  headerColor: "#b71c1c",
-  primaryColor: "#c62828",
-  secondaryColor: "#8e1717",
+  headerColor: "#ec3912",
+  primaryColor: "#f46243",
+  secondaryColor: "#f25434",
+};
+
+const LEGACY_DEFAULT_BRANDING = {
+  headerColor: "#ec3912",
+  primaryColor: "#ec3912",
+  secondaryColor: "#393939",
+};
+
+const isLikdicomLogoPath = (url) =>
+  typeof url === "string" && /likdicom_logo/i.test(url);
+
+const normalizeColor = (value, fallback, legacyValue) => {
+  if (!value || typeof value !== "string") {
+    return fallback;
+  }
+  const normalized = value.trim().toLowerCase();
+  if (!normalized || normalized === legacyValue) {
+    return fallback;
+  }
+  return value;
+};
+
+export const normalizeBrandingResponse = (branding) => {
+  if (!branding) {
+    return branding;
+  }
+
+  const normalized = {
+    ...branding,
+    headerColor: normalizeColor(
+      branding.headerColor,
+      DEFAULT_BRANDING.headerColor,
+      LEGACY_DEFAULT_BRANDING.headerColor,
+    ),
+    primaryColor: normalizeColor(
+      branding.primaryColor,
+      DEFAULT_BRANDING.primaryColor,
+      LEGACY_DEFAULT_BRANDING.primaryColor,
+    ),
+    secondaryColor: normalizeColor(
+      branding.secondaryColor,
+      DEFAULT_BRANDING.secondaryColor,
+      LEGACY_DEFAULT_BRANDING.secondaryColor,
+    ),
+  };
+
+  if (isLikdicomLogoPath(normalized.headerLogoUrl)) {
+    normalized.headerLogoUrl = null;
+  }
+
+  if (isLikdicomLogoPath(normalized.loginLogoUrl)) {
+    normalized.loginLogoUrl = null;
+  }
+
+  if (normalized.useHeaderLogoForLogin && !normalized.headerLogoUrl) {
+    normalized.useHeaderLogoForLogin = false;
+  }
+
+  return normalized;
+};
+
+const normalizeRuntimeBranding = (branding) => {
+  const normalized = normalizeBrandingResponse(branding) || {};
+  return {
+    ...normalized,
+    headerColor: DEFAULT_BRANDING.headerColor,
+    primaryColor: DEFAULT_BRANDING.primaryColor,
+    secondaryColor: DEFAULT_BRANDING.secondaryColor,
+    // Force OpenELIS default logos at runtime to avoid legacy LIKDICOM branding
+    headerLogoUrl: null,
+    loginLogoUrl: null,
+    useHeaderLogoForLogin: false,
+  };
 };
 
 // =============================================================================
@@ -25,7 +98,19 @@ const DEFAULT_BRANDING = {
  * @param {Function} callback - Callback function to handle response
  */
 export const getBranding = (callback) => {
-  getFromOpenElisServer("/rest/site-branding", callback);
+  getFromOpenElisServer("/rest/site-branding", (response) => {
+    callback(normalizeBrandingResponse(response));
+  });
+};
+
+/**
+ * Get branding for runtime UI rendering.
+ * Runtime theme is intentionally locked to the minimalist palette.
+ */
+export const getRuntimeBranding = (callback) => {
+  getFromOpenElisServer("/rest/site-branding", (response) => {
+    callback(normalizeRuntimeBranding(response));
+  });
 };
 
 /**
@@ -130,6 +215,14 @@ export const applyBrandingColors = (branding) => {
     effectiveBranding.headerColor,
   );
   root.style.setProperty(
+    "--site-branding-primary",
+    effectiveBranding.primaryColor,
+  );
+  root.style.setProperty(
+    "--site-branding-secondary",
+    effectiveBranding.secondaryColor,
+  );
+  root.style.setProperty(
     "--cds-interactive-01",
     effectiveBranding.primaryColor,
   );
@@ -170,12 +263,10 @@ export const applyFavicon = (faviconUrl) => {
  * @param {Function} callback - Optional callback after branding is applied
  */
 export const loadAndApplyBranding = (callback) => {
-  getBranding((response) => {
-    if (response) {
-      applyBrandingColors(response);
-      if (response.faviconUrl) {
-        applyFavicon(response.faviconUrl);
-      }
+  getRuntimeBranding((response) => {
+    applyBrandingColors(response || DEFAULT_BRANDING);
+    if (response?.faviconUrl) {
+      applyFavicon(response.faviconUrl);
     }
     if (callback) {
       callback(response);

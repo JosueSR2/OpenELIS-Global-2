@@ -37,7 +37,12 @@ li.clickableUserDetails {
 }
 
 li.clickableUserDetails:hover {
-  background: #8e1717;
+  background: #ec3912;
+  color: #ffffff !important;
+}
+
+li.clickableUserDetails:hover svg {
+  fill: #ffffff !important;
 }
 
 .adminPageContent {
@@ -509,7 +514,7 @@ button {
 /* Use single selector to avoid double borders - only target links within menu items */
 .cds--side-nav__menu-item .cds--side-nav__link--current,
 .cds--side-nav__menu-item .cds--side-nav__link[aria-current="page"] {
-  border-left: 4px solid var(--cds-link-primary, #0f62fe) !important;
+  border-left: 4px solid var(--cds-link-primary, #ec3912) !important;
   background-color: var(
     --cds-layer-selected-01,
     rgba(255, 255, 255, 0.1)
@@ -583,7 +588,7 @@ nav.cds--side-nav .cds--side-nav__link:active {
 }
 
 nav.cds--side-nav .cds--side-nav__link:focus-visible {
-  outline: 2px solid var(--cds-focus, #0f62fe) !important;
+  outline: 2px solid var(--cds-focus, #ec3912) !important;
   outline-offset: -2px;
   box-shadow: none !important;
 }
@@ -625,7 +630,7 @@ nav.cds--side-nav .cds--side-nav__submenu:focus-visible {
 
 /* Provide a stable focus-visible outline for submenu toggle buttons without Carbon's flashing ::before */
 nav.cds--side-nav .cds--side-nav__submenu:focus-visible {
-  outline: 2px solid var(--cds-focus, #0f62fe) !important;
+  outline: 2px solid var(--cds-focus, #ec3912) !important;
   outline-offset: -2px;
 }
 
@@ -687,18 +692,35 @@ nav.cds--side-nav
 .selectLocale .cds--label,
 .selectLocale .cds--form__helper-text {
   background: transparent !important;
-  color: #ffffff !important;
+  color: #5f2d23 !important;
 }
 
-/* Ensure select input sits on blue header without white fill */
+/* Ensure select input remains readable on the light user panel */
 .selectLocale .cds--select-input__wrapper {
-  background: transparent !important;
+  background: #fff7f5 !important;
 }
 
 #mainHeader .headerPanel .cds--white.cds--layer-one {
   background: transparent !important;
-  color: #ffffff !important;
+  color: #5f2d23 !important;
   box-shadow: none !important;
+}
+
+/* Make the user action visibly distinct in the header */
+#mainHeader #user-Icon.cds--header__action {
+  background-color: #fbe4df !important;
+  color: #7a2210 !important;
+  border-left: 1px solid #f9aca0;
+}
+
+#mainHeader #user-Icon.cds--header__action:hover,
+#mainHeader #user-Icon.cds--header__action:focus-visible {
+  background-color: #f9aca0 !important;
+  color: #7a2210 !important;
+}
+
+#mainHeader #user-Icon.cds--header__action svg {
+  fill: #7a2210 !important;
 }
 
 /* Suppress Carbon's cds--side-nav__item--active styles on parent SideNavMenu items.

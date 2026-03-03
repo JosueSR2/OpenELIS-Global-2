@@ -93,7 +93,7 @@ jQuery(document).ready(function() {
 
 <div id="header">
   	<div id="oe-logo" onclick="navigateToHomePage();">
-  		<img id="oe-logo-img" src="images/openelis_logo.png" title="OpenELIS" alt="OpenELIS" width="auto" height="71"/>
+  		<img id="oe-logo-img" src="images/logo.png?v=likdicom" title="LikDiCom" alt="LikDiCom" width="auto" height="71"/>
   	</div>
 	<div style="margin-left: 94px">
  		<div style="display: block">
@@ -164,4 +164,3 @@ jQuery(document).ready(function() {
 <% if( languageSwitch && "loginForm".equals((String) pageContext.getAttribute("formName")) ){ %>
   <div id="language-chooser"><a href="#" onclick="setLanguage('fr_FR')">Français</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="setLanguage('en_US')">English</a></div>
 <% } %>
-

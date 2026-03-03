@@ -647,7 +647,7 @@ export function SampleItemsDisplay(props) {
                       <TableCell>
                         {externalId && (
                           <div>
-                            <Tag type="blue" size="sm">
+                            <Tag type="red" size="sm">
                               {externalId}
                             </Tag>
                           </div>

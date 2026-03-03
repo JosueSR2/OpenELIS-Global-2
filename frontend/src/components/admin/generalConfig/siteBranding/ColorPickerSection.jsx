@@ -15,7 +15,7 @@ import {
   TextInput,
   InlineNotification,
 } from "@carbon/react";
-import { FormattedMessage, useIntl } from "react-intl";
+import { useIntl } from "react-intl";
 
 function ColorPickerSection({
   label,
@@ -25,11 +25,11 @@ function ColorPickerSection({
   helperText,
 }) {
   const intl = useIntl();
-  const [colorValue, setColorValue] = useState(value || "#0f62fe");
+  const [colorValue, setColorValue] = useState(value || "#ec3912");
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setColorValue(value || "#0f62fe");
+    setColorValue(value || "#ec3912");
   }, [value]);
 
   const handleColorPickerChange = (event) => {
@@ -114,7 +114,7 @@ function ColorPickerSection({
               onChange={handleColorInputChange}
               placeholder={intl.formatMessage({
                 id: "site.branding.colorPicker.placeholder",
-                defaultMessage: "#0f62fe or blue",
+                defaultMessage: "#ec3912 or tomato",
               })}
               invalid={!!error}
               invalidText={error}
@@ -123,7 +123,7 @@ function ColorPickerSection({
                 intl.formatMessage({
                   id: "site.branding.colorPicker.helperText",
                   defaultMessage:
-                    "Enter any CSS color (e.g., #0f62fe, blue, rgb(15, 98, 254))",
+                    "Enter any CSS color (e.g., #ec3912, tomato, rgb(236, 57, 18))",
                 })
               }
               style={{ flex: 1, maxWidth: "200px" }}

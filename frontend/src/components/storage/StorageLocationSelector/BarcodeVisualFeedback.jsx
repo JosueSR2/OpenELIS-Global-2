@@ -41,7 +41,7 @@ const BarcodeVisualFeedback = ({ state = "ready", errorMessage = "" }) => {
         <Renew
           size={24}
           style={{
-            color: "#0f62fe", // Carbon blue-60
+            color: "#ec3912", // OpenELIS orange
             animation: "pulse 2s infinite",
           }}
         />
@@ -114,7 +114,7 @@ const BarcodeVisualFeedback = ({ state = "ready", errorMessage = "" }) => {
           justifyContent: "center",
           width: "32px",
           height: "32px",
-          backgroundColor: "#da1e28", // Carbon red-60
+          backgroundColor: "#ec3912", // Carbon red-60
           borderRadius: "50%",
         }}
         title={displayMessage}
