@@ -267,28 +267,15 @@ function OEHeader({
   };
 
   function logo() {
-    // Use custom header logo if available, otherwise use default
-    // Add cache-busting parameter to prevent stale logo display after upload
-    const defaultLogoSrc = `../images/logo.png?v=likdicom`;
-    const logoSrc = headerLogoUrl
-      ? `${config.serverBaseUrl}${headerLogoUrl}?v=${logoVersion}`
-      : defaultLogoSrc;
-
     return (
-      <>
-        <picture>
-          <img
-            className="logo"
-            src={logoSrc}
-            alt="Logo"
-            style={{ objectFit: "contain", maxHeight: "71px" }}
-            onError={(e) => {
-              // Fallback to default logo if custom logo fails to load
-              e.target.src = defaultLogoSrc;
-            }}
-          />
-        </picture>
-      </>
+      <picture>
+        <img
+          className="logo"
+          src="../images/likdicom_logo.png"
+          alt="LikDiCom Logo"
+          style={{ objectFit: "contain", maxHeight: "71px" }}
+        />
+      </picture>
     );
   }
   const hideTimerRef = useRef(null);
@@ -683,7 +670,7 @@ function OEHeader({
                             position: "absolute",
                             top: "-5px",
                             right: "-5px",
-                            backgroundColor: "#ec3912",
+                            backgroundColor: "#ff7b00",
                             color: "white",
                             borderRadius: "50%",
                             width: "22px",

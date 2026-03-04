@@ -25,11 +25,11 @@ function ColorPickerSection({
   helperText,
 }) {
   const intl = useIntl();
-  const [colorValue, setColorValue] = useState(value || "#ec3912");
+  const [colorValue, setColorValue] = useState(value || "#ff7b00");
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setColorValue(value || "#ec3912");
+    setColorValue(value || "#ff7b00");
   }, [value]);
 
   const handleColorPickerChange = (event) => {
@@ -114,7 +114,7 @@ function ColorPickerSection({
               onChange={handleColorInputChange}
               placeholder={intl.formatMessage({
                 id: "site.branding.colorPicker.placeholder",
-                defaultMessage: "#ec3912 or tomato",
+                defaultMessage: "#ff7b00 or tomato",
               })}
               invalid={!!error}
               invalidText={error}
@@ -123,7 +123,7 @@ function ColorPickerSection({
                 intl.formatMessage({
                   id: "site.branding.colorPicker.helperText",
                   defaultMessage:
-                    "Enter any CSS color (e.g., #ec3912, tomato, rgb(236, 57, 18))",
+                    "Enter any CSS color (e.g., #ff7b00, tomato, rgb(255, 123, 0))",
                 })
               }
               style={{ flex: 1, maxWidth: "200px" }}

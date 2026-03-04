@@ -11,14 +11,14 @@ import {
 import config from "../../config.json";
 
 const DEFAULT_BRANDING = {
-  headerColor: "#ec3912",
-  primaryColor: "#f46243",
-  secondaryColor: "#f25434",
+  headerColor: "#ff7b00",
+  primaryColor: "#ff7b00",
+  secondaryColor: "#e66a00",
 };
 
 const LEGACY_DEFAULT_BRANDING = {
-  headerColor: "#ec3912",
-  primaryColor: "#ec3912",
+  headerColor: "#ff7b00",
+  primaryColor: "#ff7b00",
   secondaryColor: "#393939",
 };
 

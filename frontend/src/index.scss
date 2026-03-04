@@ -2,20 +2,20 @@
 @use "@carbon/react/scss/theme" with (
   $fallback: themes.$white,
   $theme: (
-    background: #fbe4df,
-    text-primary: #2a1612,
-    text-secondary: #5f2d23,
-    icon-primary: #5f2d23,
-    icon-secondary: #7a3f31,
-    background-hover: #f9aca0,
-    layer-01: #fff7f5,
-    layer-hover-01: #f9aca0,
-    interactive: #ec3912,
-    link-primary: #ec3912,
-    link-primary-hover: #f25434,
-    focus: #f25434,
-    border-subtle-01: #f9aca0,
-    border-interactive: #ec3912,
+    background: #ffffff,
+    text-primary: #333333,
+    text-secondary: #4a4a4a,
+    icon-primary: #333333,
+    icon-secondary: #4a4a4a,
+    background-hover: #fff8f2,
+    layer-01: #ffffff,
+    layer-hover-01: #fff8f2,
+    interactive: #ff7b00,
+    link-primary: #ff7b00,
+    link-primary-hover: #e66a00,
+    focus: #e66a00,
+    border-subtle-01: #ffd8b1,
+    border-interactive: #ff7b00,
   )
 );
 
@@ -25,13 +25,13 @@
   margin-top: 3rem;
   padding: 0;
   background:
-    radial-gradient(circle at 0% 0%, #f9aca0 0%, transparent 45%),
-    linear-gradient(180deg, #fff7f5 0%, #fbe4df 100%);
+    radial-gradient(circle at top left, #ffd8b1 0%, transparent 40%),
+    linear-gradient(180deg, #ffffff 0%, #fff8f2 100%);
   min-height: calc(100vh - 3rem);
 }
 
 .loginPageContent,
 .changePasswordPage {
   padding-top: 3rem;
-  background: linear-gradient(160deg, #fff7f5 0%, #fbe4df 100%) !important;
+  background: linear-gradient(160deg, #ffffff 0%, #fff8f2 100%) !important;
 }

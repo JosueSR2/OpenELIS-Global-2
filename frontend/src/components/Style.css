@@ -8,8 +8,16 @@
   margin: 10px;
 }
 
+/*header lightened ~25% relative to previous shade*/
 #mainHeader {
   z-index: 8001;
+  background-color: #ca8368 !important; /* 🔸 color de fondo más claro */
+  color: #f5e6d3 !important; /* 🔸 letra más clara */
+}
+
+.mainheader {
+  background-color: #ca8368 !important;
+  color: #f5e6d3 !important;
 }
 
 .headerPanel {
@@ -37,12 +45,28 @@ li.clickableUserDetails {
 }
 
 li.clickableUserDetails:hover {
-  background: #ec3912;
-  color: #ffffff !important;
+  background: #ca8368;
+  color: #f5e6d3 !important;
 }
 
 li.clickableUserDetails:hover svg {
-  fill: #ffffff !important;
+  fill: #f5e6d3 !important;
+}
+
+/*ensure dropdowns and user panels match the lightened header color*/
+.userDetails,
+li.userDetails,
+.cds--dropdown,
+.cds--list-box,
+.cds--menu {
+  background-color: #ca8368 !important;
+  color: #f5e6d3 !important;
+}
+
+.cds--dropdown__item,
+.cds--list-box__item,
+.cds--menu__item {
+  color: #f5e6d3 !important;
 }
 
 .adminPageContent {
@@ -231,8 +255,8 @@ button {
   display: flex;
   align-items: center;
   margin-top: 0.5rem;
-  color: rgb(0, 208, 255);
-  border: 1px solid rgb(0, 208, 255);
+  color: rgb(199, 41, 41);
+  border: 1px solid rgb(199, 41, 41);
 }
 
 .remove-btn {
@@ -246,7 +270,7 @@ button {
 }
 
 .resultBody {
-  border: 0.5px solid #c62828;
+  border: 0.5px solid rgb(199, 41, 41);
   border-radius: 5px;
   margin: 2%;
   padding: 0.5%;
@@ -517,7 +541,7 @@ button {
   border-left: 4px solid var(--cds-link-primary, #ec3912) !important;
   background-color: var(
     --cds-layer-selected-01,
-    rgba(255, 255, 255, 0.1)
+    rgba(255, 255, 255, 0.61)
   ) !important; /* Restore active background */
   padding-left: calc(
     1rem - 4px
@@ -534,7 +558,7 @@ nav.cds--side-nav .cds--side-nav__link--current,
 nav.cds--side-nav .cds--side-nav__link[aria-current="page"] {
   background-color: var(
     --cds-layer-selected-01,
-    rgba(255, 255, 255, 0.1)
+    rgba(255, 255, 255, 0.61)
   ) !important;
 }
 
@@ -554,7 +578,7 @@ nav.cds--side-nav .cds--side-nav__link[aria-current="page"]::before {
 .cds--side-nav__menu-item .cds--side-nav__link:hover {
   background-color: var(
     --cds-layer-hover-01,
-    rgba(255, 255, 255, 0.05)
+    rgba(255, 255, 255, 0.61)
   ) !important;
 }
 
@@ -563,7 +587,7 @@ nav.cds--side-nav .cds--side-nav__link[aria-current="page"]::before {
 .cds--side-nav__menu-item .cds--side-nav__link[aria-current="page"]:hover {
   background-color: var(
     --cds-layer-selected-01,
-    rgba(255, 255, 255, 0.1)
+    rgba(255, 255, 255, 0.61)
   ) !important; /* Keep active background on hover */
   border-right: none !important;
   border-top: none !important;
@@ -692,7 +716,7 @@ nav.cds--side-nav
 .selectLocale .cds--label,
 .selectLocale .cds--form__helper-text {
   background: transparent !important;
-  color: #5f2d23 !important;
+  color: #eecac3 !important;
 }
 
 /* Ensure select input remains readable on the light user panel */
@@ -702,25 +726,25 @@ nav.cds--side-nav
 
 #mainHeader .headerPanel .cds--white.cds--layer-one {
   background: transparent !important;
-  color: #5f2d23 !important;
+  color: #eecac3 !important;
   box-shadow: none !important;
 }
 
 /* Make the user action visibly distinct in the header */
 #mainHeader #user-Icon.cds--header__action {
   background-color: #fbe4df !important;
-  color: #7a2210 !important;
+  color: #eecac3 !important;
   border-left: 1px solid #f9aca0;
 }
 
 #mainHeader #user-Icon.cds--header__action:hover,
 #mainHeader #user-Icon.cds--header__action:focus-visible {
   background-color: #f9aca0 !important;
-  color: #7a2210 !important;
+  color: #eecac3 !important;
 }
 
 #mainHeader #user-Icon.cds--header__action svg {
-  fill: #7a2210 !important;
+  fill: #eecac3 !important;
 }
 
 /* Suppress Carbon's cds--side-nav__item--active styles on parent SideNavMenu items.
@@ -892,4 +916,193 @@ nav.cds--side-nav .cds--side-nav__link::before {
   .reduced-padding-nav-menu-item.cds--side-nav__menu-item
   .cds--side-nav__link[aria-current="page"] {
   padding-left: calc(7rem - 4px) !important;
+}
+
+/* ================================
+   Orange & White Theme Refresh
+   ================================ */
+
+#mainHeader,
+.mainheader {
+  background-color: #ff7b00 !important;
+  color: #ffffff !important;
+}
+
+.banner p {
+  color: #ffffff;
+}
+
+.userDetails,
+li.userDetails {
+  background-color: #ff7b00 !important;
+  color: #ffffff !important;
+}
+
+li.clickableUserDetails:hover {
+  background: #e66a00 !important;
+  color: #ffffff !important;
+}
+
+li.clickableUserDetails:hover svg {
+  fill: #ffffff !important;
+}
+
+.cds--dropdown,
+.cds--list-box,
+.cds--menu {
+  background-color: #ff7b00 !important;
+  color: #ffffff !important;
+}
+
+.cds--dropdown__item,
+.cds--list-box__item,
+.cds--menu__item {
+  color: #ffffff !important;
+}
+
+.adminPageContent,
+.pageContent {
+  background-color: #ffffff;
+  color: #333333;
+  margin: 0 5% 0 18%;
+}
+
+.inputText,
+.inputSelect {
+  width: 100%;
+  background-color: #ffffff;
+  color: #333333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 6px;
+}
+
+button {
+  background-color: #ff7b00;
+  color: #ffffff;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 3px;
+  padding: 6px 12px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #e66a00;
+}
+
+.add_button {
+  color: #ff7b00;
+  border: 1px solid #ff7b00;
+  background-color: #ffffff;
+}
+
+.add_button:hover {
+  background-color: #ff7b00;
+  color: #ffffff;
+}
+
+.remove-btn {
+  color: #e40000;
+  border: 1px solid #e40000;
+  background-color: #ffffff;
+}
+
+.remove-btn:hover {
+  background-color: #e40000;
+  color: #ffffff;
+}
+
+.my-custom-table th {
+  background-color: #ffd8b1;
+  color: #333333;
+}
+
+.my-custom-table tbody tr:nth-child(odd) {
+  background-color: #fff8f2;
+}
+
+.cds--side-nav {
+  background-color: #ff7b00 !important;
+  color: #ffffff !important;
+}
+
+.cds--side-nav__navigation,
+nav.cds--side-nav .cds--side-nav__submenu,
+nav.cds--side-nav .cds--side-nav__link,
+nav.cds--side-nav .cds--side-nav__item,
+.cds--side-nav__link-text,
+.cds--side-nav__submenu-title {
+  color: #ffffff !important;
+}
+
+.cds--side-nav__link a {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.cds--side-nav__menu-item .cds--side-nav__link:hover,
+.cds--side-nav__menu-item .cds--side-nav__submenu:hover {
+  background-color: #e66a00 !important;
+}
+
+.cds--side-nav__menu-item .cds--side-nav__link--current,
+.cds--side-nav__menu-item .cds--side-nav__link[aria-current="page"] {
+  border-left: 4px solid #ffffff !important;
+  background-color: #e66a00 !important;
+}
+
+.cds--side-nav__menu-item .cds--side-nav__link--current:hover,
+.cds--side-nav__menu-item .cds--side-nav__link[aria-current="page"]:hover,
+.cds--side-nav__menu-item .cds--side-nav__link--current:focus,
+.cds--side-nav__menu-item .cds--side-nav__link[aria-current="page"]:focus,
+.cds--side-nav__menu-item .cds--side-nav__link--current:focus-visible,
+.cds--side-nav__menu-item
+  .cds--side-nav__link[aria-current="page"]:focus-visible {
+  background-color: #e66a00 !important;
+}
+
+.cds--side-nav__icon > svg {
+  fill: #ffffff !important;
+}
+
+#mainHeader .headerPanel .cds--white.cds--layer-one {
+  color: #ffffff !important;
+}
+
+#mainHeader #user-Icon.cds--header__action {
+  background-color: #ffffff !important;
+  color: #ff7b00 !important;
+  border-left: 1px solid #ffd8b1;
+}
+
+#mainHeader #user-Icon.cds--header__action:hover,
+#mainHeader #user-Icon.cds--header__action:focus-visible {
+  background-color: #ffd8b1 !important;
+  color: #ff7b00 !important;
+}
+
+#mainHeader #user-Icon.cds--header__action svg {
+  fill: #ff7b00 !important;
+}
+
+.section,
+.resultBody {
+  border: 0.5px solid #ff7b00;
+  border-radius: 5px;
+  padding: 1%;
+  background-color: #ffffff;
+}
+
+.errorMessage {
+  color: #e40000;
+}
+
+@media screen and (max-width: 1056px) {
+  .adminPageContent {
+    margin-left: 5%;
+    margin-right: 5%;
+  }
 }

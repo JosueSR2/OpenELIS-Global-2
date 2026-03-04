@@ -88,9 +88,9 @@ function SiteBrandingConfig() {
       } else {
         // Handle error - use default values
         const defaultBranding = {
-          headerColor: "#ec3912",
-          primaryColor: "#f46243",
-          secondaryColor: "#f25434",
+          headerColor: "#ff7b00",
+          primaryColor: "#ff7b00",
+          secondaryColor: "#e66a00",
           colorMode: "light",
           useHeaderLogoForLogin: false,
         };
@@ -272,9 +272,9 @@ function SiteBrandingConfig() {
     // Colors must be provided as database requires NOT NULL
     const dataToSend = {
       id: branding.id,
-      headerColor: branding.headerColor?.trim() || "#ec3912",
-      primaryColor: branding.primaryColor?.trim() || "#f46243",
-      secondaryColor: branding.secondaryColor?.trim() || "#f25434",
+      headerColor: branding.headerColor?.trim() || "#ff7b00",
+      primaryColor: branding.primaryColor?.trim() || "#ff7b00",
+      secondaryColor: branding.secondaryColor?.trim() || "#e66a00",
       colorMode: branding.colorMode?.trim() || "light",
       useHeaderLogoForLogin: branding.useHeaderLogoForLogin || false,
       // Do not include headerLogoUrl, loginLogoUrl, or faviconUrl
@@ -391,23 +391,23 @@ function SiteBrandingConfig() {
         // Reset CSS custom properties to defaults
         document.documentElement.style.setProperty(
           "--site-branding-header",
-          "#ec3912",
+          "#ff7b00",
         );
         document.documentElement.style.setProperty(
           "--cds-interactive-01",
-          "#f46243",
+          "#ff7b00",
         );
         document.documentElement.style.setProperty(
           "--cds-interactive-02",
-          "#f25434",
+          "#e66a00",
         );
         document.documentElement.style.setProperty(
           "--site-branding-primary",
-          "#f46243",
+          "#ff7b00",
         );
         document.documentElement.style.setProperty(
           "--site-branding-secondary",
-          "#f25434",
+          "#e66a00",
         );
 
         // Reset favicon
@@ -547,7 +547,7 @@ function SiteBrandingConfig() {
             description={intl.formatMessage({
               id: "site.branding.header.color.description",
             })}
-            value={branding?.headerColor || "#ec3912"}
+            value={branding?.headerColor || "#ff7b00"}
             onChange={(color) => {
               setBranding((prev) => ({ ...prev, headerColor: color }));
               // Apply color immediately for preview
@@ -567,7 +567,7 @@ function SiteBrandingConfig() {
             description={intl.formatMessage({
               id: "site.branding.primary.color.description",
             })}
-            value={branding?.primaryColor || "#f46243"}
+            value={branding?.primaryColor || "#ff7b00"}
             onChange={(color) => {
               setBranding((prev) => ({ ...prev, primaryColor: color }));
               // Apply color immediately for preview
@@ -591,7 +591,7 @@ function SiteBrandingConfig() {
             description={intl.formatMessage({
               id: "site.branding.secondary.color.description",
             })}
-            value={branding?.secondaryColor || "#f25434"}
+            value={branding?.secondaryColor || "#e66a00"}
             onChange={(color) => {
               setBranding((prev) => ({ ...prev, secondaryColor: color }));
               // Apply color immediately for preview
@@ -646,7 +646,7 @@ function SiteBrandingConfig() {
                 style={{
                   marginTop: "1rem",
                   fontStyle: "italic",
-                  color: "#ec3912",
+                  color: "#ff7b00",
                 }}
               >
                 <FormattedMessage id="site.branding.unsaved.changes.warning" />
