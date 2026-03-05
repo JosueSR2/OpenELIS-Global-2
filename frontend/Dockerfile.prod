@@ -24,7 +24,18 @@ COPY --from=build /app/build /usr/share/nginx/html
 COPY --from=build /app/nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Inyectar timestamp de build en index.html para forzar actualizaciones
-RUN sed -i "s|%BUILD_TIMESTAMP%|$(date +%s)|g" /usr/share/nginx/html/index.html
+RUN set -eux; \
+    sed -i "s|%BUILD_TIMESTAMP%|$(date +%s)|g" /usr/share/nginx/html/index.html; \
+    css_file="$(find /usr/share/nginx/html/static/css -maxdepth 1 -type f -name 'main.*.css' ! -name '*.map' | head -n1)"; \
+    css_map_file="$(find /usr/share/nginx/html/static/css -maxdepth 1 -type f -name 'main.*.css.map' | head -n1)"; \
+    js_file="$(find /usr/share/nginx/html/static/js -maxdepth 1 -type f -name 'main.*.js' ! -name '*.map' | head -n1)"; \
+    js_map_file="$(find /usr/share/nginx/html/static/js -maxdepth 1 -type f -name 'main.*.js.map' | head -n1)"; \
+    [ -n "$css_file" ]; \
+    [ -n "$js_file" ]; \
+    cp "$css_file" /usr/share/nginx/html/static/css/main.css; \
+    cp "$js_file" /usr/share/nginx/html/static/js/main.js; \
+    if [ -n "$css_map_file" ]; then cp "$css_map_file" /usr/share/nginx/html/static/css/main.css.map; fi; \
+    if [ -n "$js_map_file" ]; then cp "$js_map_file" /usr/share/nginx/html/static/js/main.js.map; fi
 
 RUN apk update; \
     apk upgrade; \
