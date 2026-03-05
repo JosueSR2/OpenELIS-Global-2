@@ -145,6 +145,18 @@ public class AnalyzerServiceImpl extends AuditableBaseObjectServiceImpl<Analyzer
 
     @Override
     @Transactional(readOnly = true)
+    public List<Analyzer> getAllWithAnalyzerType() {
+        return baseObjectDAO.getAllWithAnalyzerType();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Analyzer> getWithAnalyzerType(String id) {
+        return baseObjectDAO.getWithAnalyzerType(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public boolean hasRecentResults(String analyzerId) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, -SOFT_DELETE_WINDOW_DAYS);

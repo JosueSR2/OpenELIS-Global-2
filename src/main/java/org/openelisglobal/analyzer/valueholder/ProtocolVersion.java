@@ -39,9 +39,13 @@ public enum ProtocolVersion {
         }
         // Legacy aliases
         LOOKUP.put("LIS2-A2", ASTM_LIS2_A2);
+        LOOKUP.put("1.0", ASTM_LIS2_A2);
         LOOKUP.put("ASTM", ASTM_LIS2_A2);
         LOOKUP.put("HL7", HL7_V2_3_1);
+        LOOKUP.put("2.3", HL7_V2_3_1);
+        LOOKUP.put("2.3.1", HL7_V2_3_1);
         LOOKUP.put("HL7 V2.3.1", HL7_V2_3_1);
+        LOOKUP.put("2.5", HL7_V2_5);
         LOOKUP.put("HL7 V2.5", HL7_V2_5);
     }
 

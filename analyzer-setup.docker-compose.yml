@@ -87,15 +87,20 @@ services:
     ports:
       - "8442:8443"   # HTTPS API port
       - "12000:12001" # ASTM listen port
+      - "2575:2575"   # HL7 MLLP listen port
     volumes:
       - ./volume/openelis-analyzer-bridge/configuration.yml:/app/configuration.yml:ro
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - LOGGING_LEVEL_ORG_ITECH=INFO
-      # Forward ASTM messages to OpenELIS
-      - ORG_ITECH_AHB_FORWARD_HTTP_SERVER_URI=https://oe.openelis.org:8443/api/OpenELIS-Global/analyzer/astm
+      # Forward messages to OpenELIS protocol router base
+      # (bridge appends /astm, /hl7, /csv automatically by detected protocol)
+      - ORG_ITECH_AHB_FORWARD_HTTP_SERVER_URI=https://oe.openelis.org:8443/api/OpenELIS-Global/analyzer
       # Listen for ASTM connections from analyzers
       - ORG_ITECH_AHB_LISTEN_ASTM_SERVER_PORT=12001
+      # Listen for HL7 over MLLP connections from analyzers
+      - ORG_ITECH_AHB_MLLP_ENABLED=true
+      - ORG_ITECH_AHB_MLLP_PORT=2575
       # Forward HTTP requests to ASTM mock server
       - ORG_ITECH_AHB_FORWARD_ASTM_SERVER_HOST_NAME=172.20.1.100
       - ORG_ITECH_AHB_FORWARD_ASTM_SERVER_PORT=5000
@@ -132,7 +137,6 @@ networks:
 volumes:
   serial-vol:
     driver: local
-
 
 
 

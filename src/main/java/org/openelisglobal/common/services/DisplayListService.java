@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.validator.GenericValidator;
 import org.openelisglobal.analyzer.service.AnalyzerService;
 import org.openelisglobal.analyzer.valueholder.Analyzer;
+import org.openelisglobal.common.log.LogEvent;
 import org.openelisglobal.common.util.ConfigurationProperties;
 import org.openelisglobal.common.util.ConfigurationProperties.Property;
 import org.openelisglobal.common.util.IdValuePair;
@@ -147,7 +148,13 @@ public class DisplayListService implements LocaleChangeListener {
     private void setupGlobalVariables() {
         instance = this;
 
-        refreshLists();
+        try {
+            refreshLists();
+        } catch (RuntimeException e) {
+            LogEvent.logWarn(this.getClass().getSimpleName(), "setupGlobalVariables",
+                    "Display list initialization partially failed, continuing startup: " + e.getMessage());
+            typeToListMap = new HashMap<>();
+        }
         if (localeResolver instanceof GlobalLocaleResolver) {
             ((GlobalLocaleResolver) localeResolver).addLocalChangeListener(this);
         }
@@ -1136,8 +1143,14 @@ public class DisplayListService implements LocaleChangeListener {
     }
 
     private List<IdValuePair> createAnalyzerList() {
-        List<Analyzer> analyzerList = analyzerService.getAll();
-        return analyzerList.stream().map(analyzer -> new IdValuePair(analyzer.getId(), analyzer.getName()))
-                .collect(Collectors.toList());
+        try {
+            List<Analyzer> analyzerList = analyzerService.getAll();
+            return analyzerList.stream().map(analyzer -> new IdValuePair(analyzer.getId(), analyzer.getName()))
+                    .collect(Collectors.toList());
+        } catch (RuntimeException e) {
+            LogEvent.logWarn(this.getClass().getSimpleName(), "createAnalyzerList",
+                    "Unable to build analyzer list at startup: " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
 }

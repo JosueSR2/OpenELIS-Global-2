@@ -87,7 +87,7 @@ public class AnalyzerRestController extends BaseRestController {
     public ResponseEntity<Map<String, Object>> getAnalyzers(@RequestParam(required = false) String status,
             @RequestParam(required = false) String search) {
         try {
-            List<Analyzer> analyzers = analyzerService.getAll();
+            List<Analyzer> analyzers = analyzerService.getAllWithAnalyzerType();
             Set<String> loadedPlugins = getLoadedPluginClassNames();
             List<Map<String, Object>> analyzerList = new ArrayList<>();
 
@@ -206,7 +206,7 @@ public class AnalyzerRestController extends BaseRestController {
             analyzer.setSysUserId(getSysUserId(request));
             String analyzerId = analyzerService.insert(analyzer);
 
-            Analyzer createdAnalyzer = analyzerService.get(analyzerId);
+            Analyzer createdAnalyzer = analyzerService.getWithAnalyzerType(analyzerId).orElse(null);
             if (createdAnalyzer == null) {
                 throw new LIMSRuntimeException("Failed to retrieve created analyzer");
             }
@@ -230,7 +230,7 @@ public class AnalyzerRestController extends BaseRestController {
     @PostMapping("/analyzers/{id}/test-connection")
     public ResponseEntity<Map<String, Object>> testConnection(@PathVariable String id) {
         try {
-            Analyzer analyzer = analyzerService.get(id);
+            Analyzer analyzer = analyzerService.getWithAnalyzerType(id).orElse(null);
             if (analyzer == null) {
                 Map<String, Object> error = new LinkedHashMap<>();
                 error.put("error", "Analyzer not found: " + id);
@@ -316,7 +316,7 @@ public class AnalyzerRestController extends BaseRestController {
     @GetMapping("/analyzers/{id}")
     public ResponseEntity<Map<String, Object>> getAnalyzer(@PathVariable String id) {
         try {
-            Analyzer analyzer = analyzerService.get(id);
+            Analyzer analyzer = analyzerService.getWithAnalyzerType(id).orElse(null);
             if (analyzer == null) {
                 Map<String, Object> error = new LinkedHashMap<>();
                 error.put("error", "Analyzer not found: " + id);
@@ -418,7 +418,10 @@ public class AnalyzerRestController extends BaseRestController {
             analyzerService.update(analyzer);
 
             // Retrieve updated analyzer
-            Analyzer updatedAnalyzer = analyzerService.get(id);
+            Analyzer updatedAnalyzer = analyzerService.getWithAnalyzerType(id).orElse(null);
+            if (updatedAnalyzer == null) {
+                throw new LIMSRuntimeException("Failed to retrieve updated analyzer");
+            }
             Map<String, Object> response = analyzerToMap(updatedAnalyzer, getLoadedPluginClassNames());
             return ResponseEntity.ok(response);
         } catch (LIMSRuntimeException e) {

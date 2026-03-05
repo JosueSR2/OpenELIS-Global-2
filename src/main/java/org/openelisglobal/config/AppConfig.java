@@ -169,11 +169,9 @@ public class AppConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public MappingJackson2HttpMessageConverter jacksonMessageConverter() {
-        MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
-
+    public ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
-        // Registering Hibernate4Module to support lazy objects
+        // Register modules needed across REST serialization and service-level JSON parsing.
         mapper.registerModule(new JavaTimeModule());
         mapper.registerModule(new Hibernate5JakartaModule());
         mapper.registerModule(new Jdk8Module());
@@ -186,7 +184,13 @@ public class AppConfig implements WebMvcConfigurer {
         module.addDeserializer(QuestionnaireResponse.class, new QuestionnaireResponseDeserializer());
         mapper.registerModule(module);
 
-        messageConverter.setObjectMapper(mapper);
+        return mapper;
+    }
+
+    @Bean
+    public MappingJackson2HttpMessageConverter jacksonMessageConverter(ObjectMapper objectMapper) {
+        MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
+        messageConverter.setObjectMapper(objectMapper);
         return messageConverter;
     }
 
@@ -194,6 +198,6 @@ public class AppConfig implements WebMvcConfigurer {
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
         // Add our custom-configured Jackson converter while keeping default converters
         // (including ResourceHttpMessageConverter for serving files)
-        converters.add(0, jacksonMessageConverter());
+        converters.add(0, jacksonMessageConverter(objectMapper()));
     }
 }

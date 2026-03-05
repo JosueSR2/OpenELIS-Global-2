@@ -2,19 +2,37 @@
 # Reference: https://github.com/DIGI-UW/openelis-analyzer-bridge
 # Feature: 011-madagascar-analyzer-integration
 
-openelis:
-  url: https://oe.openelis.org:8443/api/OpenELIS-Global/analyzer/astm
-  timeout: 30000
-  ssl:
-    verify: false  # Development only - uses self-signed certs
+bridge:
+  openelis:
+    # Bridge-level OpenELIS settings (new config namespace).
+    # Keep base server URL only; protocol-specific path is appended by router.
+    url: https://oe.openelis.org:8443
+    connectTimeoutSeconds: 30
+    readTimeoutSeconds: 30
+    retry:
+      maxAttempts: 3
+      backoffMs: 1000
 
-astm:
-  port: 5001
-  bind: 0.0.0.0
-  timeout: 30000
+org:
+  itech:
+    ahb:
+      forward-http-server:
+        # IMPORTANT: Use analyzer base path, not /astm.
+        # Router appends /astm, /hl7, /csv, /raw based on detected protocol.
+        uri: https://oe.openelis.org:8443/api/OpenELIS-Global/analyzer
+
+      listen-astm-server:
+        port: 12001
+
+      # Enable HL7 transport (MLLP) so HL7 traffic does not go through ASTM flow.
+      mllp:
+        enabled: true
+        port: 2575
 
 logging:
-  level: DEBUG
+  level:
+    root: INFO
+    org.itech: DEBUG
 
 # =============================================================================
 # Analyzer-Specific RS232 Serial Configuration Reference
@@ -49,7 +67,6 @@ logging:
 #     - HDL-C                  # HDL Cholesterol
 #     - CREA                   # Creatinine
 #     - TP                     # Total Protein
-
 
 
 

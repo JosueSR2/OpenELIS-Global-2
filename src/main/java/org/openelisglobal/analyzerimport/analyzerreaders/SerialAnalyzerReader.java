@@ -168,18 +168,34 @@ public class SerialAnalyzerReader extends AnalyzerReader {
 
     public boolean processData(String currentUserId) {
         error = null;
+        if (looksLikeHl7Message()) {
+            error = "HL7 message received on ASTM serial flow; route this payload to /analyzer/hl7";
+            LogEvent.logWarn(getClass().getSimpleName(), "processData", error);
+            return false;
+        }
         ensureInserterResponder();
         if (plugin == null) {
-            error = "No ASTM plugin matched this message (e.g. configure GenericASTM with matching identifier pattern)";
+            String identifier = parseIdentifierFromAstmHeader();
+            if (identifier != null) {
+                error = "No ASTM analyzer configuration matched identifier '" + identifier + "'";
+            } else {
+                error = "No ASTM plugin matched this message (e.g. configure GenericASTM with matching identifier pattern)";
+            }
             LogEvent.logError(getClass().getSimpleName(), "processData", error);
             return false;
         }
-        if (plugin.isAnalyzerResult(lines)) {
-            return insertAnalyzerData(currentUserId);
-        } else {
-            responseBody = buildResponseForQuery();
-            hasResponse = true;
-            return true;
+        try {
+            if (plugin.isAnalyzerResult(lines)) {
+                return insertAnalyzerData(currentUserId);
+            } else {
+                responseBody = buildResponseForQuery();
+                hasResponse = true;
+                return true;
+            }
+        } catch (RuntimeException e) {
+            error = "Matched plugin failed while classifying ASTM message";
+            LogEvent.logWarn(getClass().getSimpleName(), "processData", e.getMessage());
+            return false;
         }
     }
 
@@ -192,20 +208,66 @@ public class SerialAnalyzerReader extends AnalyzerReader {
     }
 
     private void setInserterResponder() {
+        if (looksLikeHl7Message()) {
+            return;
+        }
         PluginAnalyzerService pluginService = SpringContext.getBean(PluginAnalyzerService.class);
+        String identifier = parseIdentifierFromAstmHeader();
+        if (identifier != null) {
+            AnalyzerImporterPlugin configuredPlugin = resolvePluginByIdentifier(pluginService, identifier);
+            if (configuredPlugin != null) {
+                try {
+                    this.plugin = configuredPlugin;
+                    inserter = configuredPlugin.getAnalyzerLineInserter();
+                    responder = configuredPlugin.getAnalyzerResponder();
+                    return;
+                } catch (RuntimeException e) {
+                    LogEvent.logWarn(this.getClass().getSimpleName(), "setInserterResponder",
+                            "Configured plugin failed: " + e.getMessage());
+                    return;
+                }
+            }
+            // Identifier is present but not configured in OpenELIS; avoid probing all
+            // legacy plugins to prevent noisy false-positive errors.
+            LogEvent.logWarn(this.getClass().getSimpleName(), "setInserterResponder",
+                    "No configured analyzer matched ASTM identifier '" + identifier + "'");
+            return;
+        }
+
         List<AnalyzerImporterPlugin> plugins = choosePluginOrder(pluginService);
         for (AnalyzerImporterPlugin plugin : plugins) {
-            if (plugin.isTargetAnalyzer(lines)) {
-                try {
+            try {
+                if (plugin.isTargetAnalyzer(lines)) {
                     this.plugin = plugin;
                     inserter = plugin.getAnalyzerLineInserter();
                     responder = plugin.getAnalyzerResponder();
                     return;
-                } catch (RuntimeException e) {
-                    LogEvent.logError(e);
                 }
+            } catch (RuntimeException e) {
+                LogEvent.logWarn(this.getClass().getSimpleName(), "setInserterResponder",
+                        "Plugin detection failed for " + plugin.getClass().getSimpleName() + ": " + e.getMessage());
             }
         }
+    }
+
+    /**
+     * Prevent false ASTM plugin probing when an HL7 message is received on a
+     * serial/ASTM path.
+     */
+    private boolean looksLikeHl7Message() {
+        if (lines == null || lines.isEmpty()) {
+            return false;
+        }
+        for (String line : lines) {
+            if (line == null) {
+                continue;
+            }
+            String trimmed = line.trim();
+            if (!trimmed.isEmpty()) {
+                return trimmed.startsWith("MSH|");
+            }
+        }
+        return false;
     }
 
     /**
@@ -214,6 +276,46 @@ public class SerialAnalyzerReader extends AnalyzerReader {
      */
     private List<AnalyzerImporterPlugin> choosePluginOrder(PluginAnalyzerService pluginService) {
         return pluginService.getAnalyzerPlugins();
+    }
+
+    private AnalyzerImporterPlugin resolvePluginByIdentifier(PluginAnalyzerService pluginService, String identifier) {
+        try {
+            AnalyzerService analyzerService = SpringContext.getBean(AnalyzerService.class);
+            if (analyzerService == null) {
+                return null;
+            }
+            Optional<Analyzer> analyzerOpt = analyzerService.findByIdentifierPatternMatch(identifier);
+            if (analyzerOpt.isEmpty() || analyzerOpt.get().getId() == null) {
+                return null;
+            }
+            Analyzer analyzer = analyzerOpt.get();
+
+            // Preferred lookup: explicit analyzer-id registration.
+            AnalyzerImporterPlugin plugin = pluginService.getPluginByAnalyzerId(analyzer.getId());
+            if (plugin != null) {
+                return plugin;
+            }
+
+            // Fallback: resolve by analyzer_type.plugin_class_name for legacy plugins
+            // that are loaded but not registered by analyzer ID.
+            if (analyzer.getAnalyzerType() != null && analyzer.getAnalyzerType().getPluginClassName() != null) {
+                String pluginClassName = analyzer.getAnalyzerType().getPluginClassName();
+                for (AnalyzerImporterPlugin candidate : pluginService.getAnalyzerPlugins()) {
+                    if (candidate.getClass().getName().equals(pluginClassName)) {
+                        return candidate;
+                    }
+                }
+            }
+
+            LogEvent.logWarn(this.getClass().getSimpleName(), "resolvePluginByIdentifier",
+                    "Analyzer matched by identifier but no loaded plugin was resolvable for analyzer id="
+                            + analyzer.getId());
+            return null;
+        } catch (RuntimeException e) {
+            LogEvent.logWarn(this.getClass().getSimpleName(), "resolvePluginByIdentifier",
+                    "Failed to resolve analyzer by identifier: " + e.getMessage());
+            return null;
+        }
     }
 
     private String parseIdentifierFromAstmHeader() {

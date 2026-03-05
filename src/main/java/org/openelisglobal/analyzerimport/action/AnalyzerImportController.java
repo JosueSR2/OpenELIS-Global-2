@@ -16,8 +16,10 @@ package org.openelisglobal.analyzerimport.action;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.validator.GenericValidator;
 import org.openelisglobal.analyzer.service.BidirectionalAnalyzer;
 import org.openelisglobal.analyzerimport.analyzerreaders.ASTMAnalyzerReader;
@@ -26,6 +28,7 @@ import org.openelisglobal.analyzerimport.analyzerreaders.AnalyzerReaderFactory;
 import org.openelisglobal.analyzerimport.analyzerreaders.HL7AnalyzerReader;
 import org.openelisglobal.analyzerimport.util.AnalyzerTestNameCache;
 import org.openelisglobal.common.action.IActionConstants;
+import org.openelisglobal.common.log.LogEvent;
 import org.openelisglobal.common.services.PluginAnalyzerService;
 import org.openelisglobal.internationalization.MessageUtil;
 import org.openelisglobal.login.service.LoginUserService;
@@ -87,39 +90,46 @@ public class AnalyzerImportController implements IActionConstants {
 
     @PostMapping("/analyzer/astm")
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        byte[] payload = request.getInputStream().readAllBytes();
+        if (payload == null || payload.length == 0) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Empty analyzer payload");
+            return;
+        }
 
-        ASTMAnalyzerReader reader = null;
-        boolean read = false;
-        InputStream stream = request.getInputStream();
+        // Accept HL7 on ASTM endpoint for compatibility with bridges that cannot split
+        // routes by protocol.
+        if (looksLikeHl7(payload)) {
+            processHl7Payload(payload, request, response);
+            return;
+        }
 
-        reader = (ASTMAnalyzerReader) AnalyzerReaderFactory.getReaderFor("astm");
-
-        if (reader != null) {
-            read = reader.readStream(stream);
-            if (read) {
-                boolean success = reader.processData(getSysUserId(request));
-                if (reader.hasResponse()) {
-                    response.getWriter().print(reader.getResponse());
-                }
-                if (success) {
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    return;
-                } else {
-                    if (reader.getError() != null) {
-                        response.getWriter().print(reader.getError());
-                    }
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    return;
-                }
-            } else {
-                response.getWriter().print(reader.getError());
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return;
-            }
-        } else {
+        ASTMAnalyzerReader reader = (ASTMAnalyzerReader) AnalyzerReaderFactory.getReaderFor("astm");
+        if (reader == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
+
+        reader.setClientIpAddress(request.getRemoteAddr());
+        boolean read = reader.readStream(new ByteArrayInputStream(payload));
+        if (!read) {
+            response.getWriter().print(reader.getError());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        boolean success = reader.processData(resolveSystemUserId(request));
+        if (reader.hasResponse()) {
+            response.getWriter().print(reader.getResponse());
+        }
+        if (success) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return;
+        }
+
+        if (reader.getError() != null) {
+            response.getWriter().print(reader.getError());
+        }
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     }
 
     /**
@@ -129,30 +139,59 @@ public class AnalyzerImportController implements IActionConstants {
     @PostMapping("/analyzer/hl7")
     public void doPostHl7(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        processHl7Payload(request.getInputStream().readAllBytes(), request, response);
+    }
 
-        response.setContentType("text/plain;charset=UTF-8");
-        HL7AnalyzerReader reader = (HL7AnalyzerReader) AnalyzerReaderFactory.getReaderFor("hl7");
-        if (reader == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "HL7 reader not available");
-            return;
+    private void processHl7Payload(byte[] payload, HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        try {
+            response.setContentType("text/plain;charset=UTF-8");
+
+            HL7AnalyzerReader reader = (HL7AnalyzerReader) AnalyzerReaderFactory.getReaderFor("hl7");
+            if (reader == null) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "HL7 reader not available");
+                return;
+            }
+
+            boolean read = reader.readStream(new ByteArrayInputStream(payload));
+            if (!read) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                        reader.getError() != null ? reader.getError() : "HL7 read failed");
+                return;
+            }
+
+            boolean success = reader.insertAnalyzerData(resolveSystemUserId(request));
+            if (success) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                return;
+            }
+
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    reader.getError() != null ? reader.getError() : "HL7 insert failed");
+        } catch (Exception e) {
+            LogEvent.logError(e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "HL7 processing error: " + (e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName()));
         }
-        boolean read = reader.readStream(request.getInputStream());
-        if (!read) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                    reader.getError() != null ? reader.getError() : "HL7 read failed");
-            return;
+    }
+
+    private boolean looksLikeHl7(byte[] payload) {
+        String raw = new String(payload, StandardCharsets.UTF_8);
+        for (String line : raw.split("\\r?\\n")) {
+            if (line == null) {
+                continue;
+            }
+            String trimmed = line.trim();
+            if (!trimmed.isEmpty()) {
+                return trimmed.startsWith("MSH|");
+            }
         }
+        return false;
+    }
+
+    private String resolveSystemUserId(HttpServletRequest request) {
         String userId = getSysUserId(request);
-        if (userId == null) {
-            userId = "1";
-        }
-        boolean success = reader.insertAnalyzerData(userId);
-        if (success) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            return;
-        }
-        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                reader.getError() != null ? reader.getError() : "HL7 insert failed");
+        return userId == null ? "1" : userId;
     }
 
     @PostMapping("/analyzer/runAction")

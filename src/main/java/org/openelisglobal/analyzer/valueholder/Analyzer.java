@@ -38,6 +38,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
+import org.openelisglobal.common.hibernateConverter.ProtocolVersionConverter;
 import org.openelisglobal.common.hibernateConverter.StringListConverter;
 import org.openelisglobal.common.valueholder.BaseObject;
 
@@ -96,7 +97,7 @@ public class Analyzer extends BaseObject<String> {
     private Integer port;
 
     @Column(name = "protocol_version", length = 20)
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = ProtocolVersionConverter.class)
     private ProtocolVersion protocolVersion = ProtocolVersion.ASTM_LIS2_A2;
 
     @Column(name = "test_unit_ids", columnDefinition = "TEXT")

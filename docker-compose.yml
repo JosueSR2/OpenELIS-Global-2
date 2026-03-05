@@ -66,8 +66,8 @@ services:
             - ./volume/properties/SystemConfiguration.properties:/var/lib/openelis-global/properties/SystemConfiguration.properties
             - ./volume/odoo/odoo-test-product-mapping.csv:/var/lib/openelis-global/odoo/odoo-test-product-mapping.csv
             - ./configuration:/var/lib/openelis-global/configuration
-            #Runing OpenELIS with the locally compiled war file
-            #- ./target/OpenELIS-Global.war:/usr/local/tomcat/webapps/OpenELIS-Global.war
+            # Run OpenELIS with the locally compiled WAR file
+            - ./target/OpenELIS-Global.war:/usr/local/tomcat/webapps/OpenELIS-Global.war
         secrets:
             - source: common.properties
             

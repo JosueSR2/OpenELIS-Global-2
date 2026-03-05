@@ -122,8 +122,14 @@ public class PluginRegistryService {
             }
         }
 
-        // Link legacy analyzers (created by connect()) to their AnalyzerType
-        linkLegacyAnalyzersToTypes();
+        // Link legacy analyzers (created by connect()) to their AnalyzerType.
+        // Best effort: startup must continue even if legacy rows are stale.
+        try {
+            linkLegacyAnalyzersToTypes();
+        } catch (RuntimeException e) {
+            LogEvent.logWarn(this.getClass().getName(), "registerLoadedPlugins",
+                    "Skipping legacy analyzer linking due to error: " + e.getMessage());
+        }
 
         int total = analyzerTypeService.getAll().size();
         LogEvent.logInfo(this.getClass().getName(), "registerLoadedPlugins", String.format(
@@ -155,12 +161,17 @@ public class PluginRegistryService {
             String pluginClassName = plugin.getClass().getName();
             Optional<AnalyzerType> typeOpt = analyzerTypeService.getByPluginClassName(pluginClassName);
             if (typeOpt.isPresent()) {
-                analyzer.setAnalyzerType(typeOpt.get());
-                analyzer.setSysUserId("1");
-                analyzerService.save(analyzer);
-                LogEvent.logInfo(this.getClass().getName(), "linkLegacyAnalyzersToTypes",
-                        "Linked analyzer '" + analyzer.getName() + "' to type '" + typeOpt.get().getName() + "'");
-                linked++;
+                try {
+                    analyzer.setAnalyzerType(typeOpt.get());
+                    analyzer.setSysUserId("1");
+                    analyzerService.save(analyzer);
+                    LogEvent.logInfo(this.getClass().getName(), "linkLegacyAnalyzersToTypes",
+                            "Linked analyzer '" + analyzer.getName() + "' to type '" + typeOpt.get().getName() + "'");
+                    linked++;
+                } catch (RuntimeException e) {
+                    LogEvent.logWarn(this.getClass().getName(), "linkLegacyAnalyzersToTypes",
+                            "Skipping analyzer '" + analyzer.getName() + "' due to update error: " + e.getMessage());
+                }
             }
         }
 

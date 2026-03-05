@@ -128,11 +128,20 @@ public class AnalyzerTestNameCache {
         List<AnalyzerTestMapping> mappingList = analyzerTestMappingService.getAll();
 
         for (AnalyzerTestMapping mapping : mappingList) {
+            if (mapping == null || mapping.getAnalyzerId() == null || mapping.getAnalyzerTestName() == null) {
+                continue;
+            }
             MappedTestName mappedTestName = createMappedTestName(testService, mapping);
+            if (mappedTestName == null) {
+                continue;
+            }
 
             Analyzer analyzer = new Analyzer();
             analyzer.setId(mapping.getAnalyzerId());
             analyzer = analyzerService.get(analyzer.getId());
+            if (analyzer == null || analyzer.getName() == null) {
+                continue;
+            }
 
             Map<String, MappedTestName> testMap = analyzerNameToTestNameMap.get(analyzer.getName());
             if (testMap != null) {
@@ -142,6 +151,9 @@ public class AnalyzerTestNameCache {
     }
 
     private MappedTestName createMappedTestName(TestService testService, AnalyzerTestMapping mapping) {
+        if (mapping == null) {
+            return null;
+        }
 
         MappedTestName mappedTest = new MappedTestName();
         mappedTest.setAnalyzerTestName(mapping.getAnalyzerTestName());

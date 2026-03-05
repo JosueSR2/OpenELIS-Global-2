@@ -253,6 +253,10 @@ public class PluginLoader {
         } catch (java.lang.InstantiationException e) {
             LogEvent.logDebug(e);
             throw new LIMSException("See previous stack trace");
+        } catch (RuntimeException e) {
+            // Third-party plugin initialization must not crash OpenELIS startup.
+            LogEvent.logError(e);
+            throw new LIMSException("See previous stack trace");
         }
     }
 

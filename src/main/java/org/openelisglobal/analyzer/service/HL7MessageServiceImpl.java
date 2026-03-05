@@ -59,11 +59,16 @@ public class HL7MessageServiceImpl implements HL7MessageService {
         }
         try {
             Message msg = parser.parse(normalizeSegmentTerminators(rawMessage));
-            if (!(msg instanceof ORU_R01)) {
+            Terser terser = new Terser(msg);
+            String messageType = StringUtils.defaultString(terser.get("/MSH-9-1")).trim();
+            String triggerEvent = StringUtils.defaultString(terser.get("/MSH-9-2")).trim();
+            if (!"ORU".equalsIgnoreCase(messageType) || !"R01".equalsIgnoreCase(triggerEvent)) {
                 throw new HL7ParseException("Message is not ORU^R01: " + msg.getClass().getSimpleName());
             }
-            ORU_R01 oru = (ORU_R01) msg;
-            return extractOruResult(oru);
+            if (msg instanceof ORU_R01) {
+                return extractOruResult((ORU_R01) msg);
+            }
+            return extractOruResultGeneric(msg);
         } catch (HL7Exception e) {
             throw new HL7ParseException("Failed to parse ORU^R01: " + e.getMessage(), e);
         }
@@ -234,6 +239,82 @@ public class HL7MessageServiceImpl implements HL7MessageService {
         }
 
         return new OruR01ParseResultImpl(patientId, placer, filler, serviceId, results);
+    }
+
+    /**
+     * Version-tolerant ORU^R01 extraction for non-v2.5.1 messages.
+     */
+    private OruR01ParseResult extractOruResultGeneric(Message msg) throws HL7Exception {
+        Terser t = new Terser(msg);
+
+        String patientId = firstNonBlank(
+                safeGet(t, "/PATIENT_RESULT(0)/PATIENT/PID-3-1"),
+                safeGet(t, "/PID-3-1"));
+        String placer = firstNonBlank(
+                safeGet(t, "/PATIENT_RESULT(0)/ORDER_OBSERVATION(0)/ORC-2-1"),
+                safeGet(t, "/ORC-2-1"));
+        String filler = firstNonBlank(
+                safeGet(t, "/PATIENT_RESULT(0)/ORDER_OBSERVATION(0)/ORC-3-1"),
+                safeGet(t, "/ORC-3-1"));
+        String serviceId = firstNonBlank(
+                safeGet(t, "/PATIENT_RESULT(0)/ORDER_OBSERVATION(0)/OBR-4-1"),
+                safeGet(t, "/PATIENT_RESULT(0)/ORDER_OBSERVATION(0)/OBR-4-2"),
+                safeGet(t, "/OBR-4-1"),
+                safeGet(t, "/OBR-4-2"));
+
+        List<HL7MessageService.ObxResult> results = new ArrayList<>();
+        int index = 0;
+        while (true) {
+            String base = "/PATIENT_RESULT(0)/ORDER_OBSERVATION(0)/OBSERVATION(" + index + ")/OBX";
+            String code = firstNonBlank(safeGet(t, base + "-3-1"), safeGet(t, base + "-3-2"));
+            if (StringUtils.isBlank(code)) {
+                String fallbackBase = "/OBSERVATION(" + index + ")/OBX";
+                code = firstNonBlank(safeGet(t, fallbackBase + "-3-1"), safeGet(t, fallbackBase + "-3-2"));
+                if (StringUtils.isBlank(code)) {
+                    break;
+                }
+                String value = firstNonBlank(safeGet(t, fallbackBase + "-5"), safeGet(t, fallbackBase + "-5-1"));
+                String units = firstNonBlank(safeGet(t, fallbackBase + "-6-1"), safeGet(t, fallbackBase + "-6"));
+                String valueType = safeGet(t, fallbackBase + "-2");
+                results.add(new ObxResultImpl(code, code, value, units, valueType));
+                index++;
+                continue;
+            }
+
+            String name = firstNonBlank(safeGet(t, base + "-3-2"), code);
+            String value = firstNonBlank(safeGet(t, base + "-5"), safeGet(t, base + "-5-1"));
+            String units = firstNonBlank(safeGet(t, base + "-6-1"), safeGet(t, base + "-6"));
+            String valueType = safeGet(t, base + "-2");
+            results.add(new ObxResultImpl(code, name, value, units, valueType));
+            index++;
+        }
+
+        return new OruR01ParseResultImpl(
+                StringUtils.defaultString(patientId),
+                StringUtils.defaultString(placer),
+                StringUtils.defaultString(filler),
+                StringUtils.defaultString(serviceId),
+                results);
+    }
+
+    private String firstNonBlank(String... values) {
+        if (values == null) {
+            return "";
+        }
+        for (String value : values) {
+            if (StringUtils.isNotBlank(value)) {
+                return value.trim();
+            }
+        }
+        return "";
+    }
+
+    private String safeGet(Terser terser, String path) {
+        try {
+            return terser.get(path);
+        } catch (HL7Exception e) {
+            return "";
+        }
     }
 
     private static String getCXId(ca.uhn.hl7v2.model.v251.datatype.CX cx) {

@@ -19,6 +19,10 @@ public interface AnalyzerService extends BaseObjectService<Analyzer, String> {
 
     Optional<Analyzer> findByIdentifierPatternMatch(String analyzerIdentifier);
 
+    List<Analyzer> getAllWithAnalyzerType();
+
+    Optional<Analyzer> getWithAnalyzerType(String id);
+
     boolean hasRecentResults(String analyzerId);
 
     boolean canTransitionTo(String analyzerId, AnalyzerStatus newStatus);
