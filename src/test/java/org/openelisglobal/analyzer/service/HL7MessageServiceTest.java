@@ -58,6 +58,25 @@ public class HL7MessageServiceTest {
         assertTrue("Results count", result.getResults().size() >= 3);
     }
 
+    @Test
+    public void parseOruR01_minimalV23Message_extractsObxResults() {
+        String raw = String.join("\r",
+                "MSH|^~\\\\&|HL7_DEFAULT|LAB|Middleware|LIS|20260312104310||ORU^R01|85468|P|2.3",
+                "PID|1||85468||DOE^JOHN",
+                "OBR|1|85468||GLU^Glucose",
+                "OBX|1|NM|GLU^Glucose||11.16|mmol/L|3.5-6.0|N|||F");
+
+        HL7MessageService.OruR01ParseResult result = service.parseOruR01(raw);
+
+        assertNotNull(result);
+        assertTrue("Has at least one OBX", result.getResults().size() >= 1);
+        assertEquals("GLU", result.getResults().get(0).getTestCode());
+        assertEquals("Glucose", result.getResults().get(0).getTestName());
+        assertEquals("11.16", result.getResults().get(0).getValue());
+        assertEquals("mmol/L", result.getResults().get(0).getUnits());
+        assertEquals("NM", result.getResults().get(0).getValueType());
+    }
+
     @Test(expected = HL7MessageService.HL7ParseException.class)
     public void parseOruR01_empty_throws() {
         service.parseOruR01("");

@@ -65,7 +65,8 @@ public abstract class AnalyzerLineInserter {
             try {
                 persistResults(results, currentUserId);
             } catch (LIMSRuntimeException e) {
-                LogEvent.logDebug(e);
+                // Persistence failures are actionable and should be visible at error level.
+                LogEvent.logError(e);
                 return false;
             }
         }

@@ -254,6 +254,10 @@ public class HL7AnalyzerReader extends AnalyzerReader {
         boolean success = fallbackInserter.insert(lines, systemUserId);
         if (!success) {
             error = fallbackInserter.getError();
+            if (StringUtils.isBlank(error)) {
+                error = "Built-in HL7 insert failed (no details available)";
+            }
+            LogEvent.logError(getClass().getSimpleName(), "tryBuiltInHl7Insert", error);
             return false;
         }
         return true;

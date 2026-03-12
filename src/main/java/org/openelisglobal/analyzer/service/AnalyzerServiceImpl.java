@@ -6,6 +6,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import org.openelisglobal.analyzer.dao.AnalyzerDAO;
@@ -120,6 +121,8 @@ public class AnalyzerServiceImpl extends AuditableBaseObjectServiceImpl<Analyzer
         }
 
         String identifier = analyzerIdentifier.trim();
+        Analyzer bestMatch = null;
+        int bestScore = Integer.MIN_VALUE;
         for (Analyzer analyzer : candidates) {
             if (analyzer.getIdentifierPattern() == null) {
                 continue;
@@ -127,15 +130,40 @@ public class AnalyzerServiceImpl extends AuditableBaseObjectServiceImpl<Analyzer
             try {
                 String pattern = analyzer.getIdentifierPattern();
                 Pattern p = Pattern.compile(pattern);
-                if (p.matcher(identifier).find()) {
-                    LogEvent.logInfo(this.getClass().getSimpleName(), "findByIdentifierPatternMatch", "MATCHED: '"
-                            + identifier + "' matched pattern '" + pattern + "' for analyzer " + analyzer.getName());
-                    return Optional.of(analyzer);
+                Matcher m = p.matcher(identifier);
+                if (!m.find()) {
+                    continue;
+                }
+
+                // Prefer the most specific match rather than "first match wins".
+                // This avoids a catch-all pattern like ".*" shadowing an exact match.
+                int score = 0;
+                score += pattern.length();
+                if (pattern.startsWith("^")) {
+                    score += 10_000;
+                }
+                if (pattern.endsWith("$")) {
+                    score += 10_000;
+                }
+                if (pattern.equals(".*") || pattern.equals("^.*$")) {
+                    score -= 100_000;
+                }
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMatch = analyzer;
                 }
             } catch (PatternSyntaxException e) {
                 LogEvent.logWarn(this.getClass().getSimpleName(), "findByIdentifierPatternMatch",
                         "Invalid identifier_pattern regex for analyzer id=" + analyzer.getId());
             }
+        }
+
+        if (bestMatch != null) {
+            LogEvent.logInfo(this.getClass().getSimpleName(), "findByIdentifierPatternMatch", "MATCHED: '" + identifier
+                    + "' matched best pattern '" + bestMatch.getIdentifierPattern() + "' for analyzer "
+                    + bestMatch.getName());
+            return Optional.of(bestMatch);
         }
 
         LogEvent.logWarn(this.getClass().getSimpleName(), "findByIdentifierPatternMatch",

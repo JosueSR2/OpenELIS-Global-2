@@ -58,7 +58,8 @@ public class HL7MessageServiceImpl implements HL7MessageService {
             throw new HL7ParseException("Raw ORU^R01 message is null or empty");
         }
         try {
-            Message msg = parser.parse(normalizeSegmentTerminators(rawMessage));
+            String normalized = normalizeSegmentTerminators(rawMessage);
+            Message msg = parser.parse(normalized);
             Terser terser = new Terser(msg);
             String messageType = StringUtils.defaultString(terser.get("/MSH-9-1")).trim();
             String triggerEvent = StringUtils.defaultString(terser.get("/MSH-9-2")).trim();
@@ -68,7 +69,7 @@ public class HL7MessageServiceImpl implements HL7MessageService {
             if (msg instanceof ORU_R01) {
                 return extractOruResult((ORU_R01) msg);
             }
-            return extractOruResultGeneric(msg);
+            return extractOruResultGeneric(msg, normalized);
         } catch (HL7Exception e) {
             throw new HL7ParseException("Failed to parse ORU^R01: " + e.getMessage(), e);
         }
@@ -244,7 +245,7 @@ public class HL7MessageServiceImpl implements HL7MessageService {
     /**
      * Version-tolerant ORU^R01 extraction for non-v2.5.1 messages.
      */
-    private OruR01ParseResult extractOruResultGeneric(Message msg) throws HL7Exception {
+    private OruR01ParseResult extractOruResultGeneric(Message msg, String normalizedRawMessage) throws HL7Exception {
         Terser t = new Terser(msg);
 
         String patientId = firstNonBlank(
@@ -252,10 +253,14 @@ public class HL7MessageServiceImpl implements HL7MessageService {
                 safeGet(t, "/PID-3-1"));
         String placer = firstNonBlank(
                 safeGet(t, "/PATIENT_RESULT(0)/ORDER_OBSERVATION(0)/ORC-2-1"),
-                safeGet(t, "/ORC-2-1"));
+                safeGet(t, "/ORC-2-1"),
+                safeGet(t, "/PATIENT_RESULT(0)/ORDER_OBSERVATION(0)/OBR-2-1"),
+                safeGet(t, "/OBR-2-1"));
         String filler = firstNonBlank(
                 safeGet(t, "/PATIENT_RESULT(0)/ORDER_OBSERVATION(0)/ORC-3-1"),
-                safeGet(t, "/ORC-3-1"));
+                safeGet(t, "/ORC-3-1"),
+                safeGet(t, "/PATIENT_RESULT(0)/ORDER_OBSERVATION(0)/OBR-3-1"),
+                safeGet(t, "/OBR-3-1"));
         String serviceId = firstNonBlank(
                 safeGet(t, "/PATIENT_RESULT(0)/ORDER_OBSERVATION(0)/OBR-4-1"),
                 safeGet(t, "/PATIENT_RESULT(0)/ORDER_OBSERVATION(0)/OBR-4-2"),
@@ -289,12 +294,102 @@ public class HL7MessageServiceImpl implements HL7MessageService {
             index++;
         }
 
+        // Some v2.3 messages (and some minimal ORU payloads) don't align with the
+        // Terser group paths used above. If we got no results, fall back to direct
+        // segment parsing.
+        if (results.isEmpty()) {
+            List<String> segmentLines = toSegmentLines(normalizedRawMessage);
+            results = extractObxFromSegmentLines(segmentLines);
+
+            if (StringUtils.isBlank(placer)) {
+                placer = extractFirstField(segmentLines, "ORC", 2);
+                if (StringUtils.isBlank(placer)) {
+                    placer = extractFirstField(segmentLines, "OBR", 2);
+                }
+            }
+            if (StringUtils.isBlank(filler)) {
+                filler = extractFirstField(segmentLines, "ORC", 3);
+                if (StringUtils.isBlank(filler)) {
+                    filler = extractFirstField(segmentLines, "OBR", 3);
+                }
+            }
+            if (StringUtils.isBlank(serviceId)) {
+                serviceId = extractFirstComponent(segmentLines, "OBR", 4, 1);
+                if (StringUtils.isBlank(serviceId)) {
+                    serviceId = extractFirstComponent(segmentLines, "OBR", 4, 2);
+                }
+            }
+        }
+
         return new OruR01ParseResultImpl(
                 StringUtils.defaultString(patientId),
                 StringUtils.defaultString(placer),
                 StringUtils.defaultString(filler),
                 StringUtils.defaultString(serviceId),
                 results);
+    }
+
+    private List<HL7MessageService.ObxResult> extractObxFromSegmentLines(List<String> segmentLines) {
+        List<HL7MessageService.ObxResult> results = new ArrayList<>();
+        if (segmentLines == null) {
+            return results;
+        }
+        for (String line : segmentLines) {
+            if (line == null || !line.startsWith("OBX|")) {
+                continue;
+            }
+            String[] fields = line.split("\\|", -1);
+            String valueType = fields.length > 2 ? fields[2].trim() : "";
+            String id = fields.length > 3 ? fields[3] : "";
+            String[] idComp = id != null ? id.split("\\^", -1) : new String[0];
+            String code = idComp.length > 0 ? idComp[0].trim() : "";
+            String name = idComp.length > 1 ? idComp[1].trim() : "";
+            if (StringUtils.isBlank(code) && StringUtils.isNotBlank(id)) {
+                code = id.trim();
+            }
+            if (StringUtils.isBlank(name)) {
+                name = code;
+            }
+            String value = fields.length > 5 ? fields[5].trim() : "";
+            String units = fields.length > 6 ? fields[6].trim() : "";
+            results.add(new ObxResultImpl(code, name, value, units, valueType));
+        }
+        return results;
+    }
+
+    private String extractFirstField(List<String> segmentLines, String segment, int fieldNumber) {
+        if (segmentLines == null || segment == null || fieldNumber < 1) {
+            return "";
+        }
+        String prefix = segment + FIELD_SEP;
+        for (String line : segmentLines) {
+            if (line == null || !line.startsWith(prefix)) {
+                continue;
+            }
+            String[] fields = line.split("\\|", -1);
+            // fieldNumber is 1-based after the segment name.
+            int index = fieldNumber;
+            if (fields.length > index && StringUtils.isNotBlank(fields[index])) {
+                return fields[index].trim();
+            }
+        }
+        return "";
+    }
+
+    private String extractFirstComponent(List<String> segmentLines, String segment, int fieldNumber, int component) {
+        String field = extractFirstField(segmentLines, segment, fieldNumber);
+        if (StringUtils.isBlank(field)) {
+            return "";
+        }
+        if (component < 1) {
+            return field;
+        }
+        String[] parts = field.split("\\^", -1);
+        int idx = component - 1;
+        if (idx < parts.length && StringUtils.isNotBlank(parts[idx])) {
+            return parts[idx].trim();
+        }
+        return "";
     }
 
     private String firstNonBlank(String... values) {

@@ -312,16 +312,16 @@ public class AnalyzerServiceStatusTest {
     }
 
     @Test
-    public void testFindByIdentifierPatternMatch_FirstMatchWins() {
+    public void testFindByIdentifierPatternMatch_PrefersMoreSpecificPattern() {
         Analyzer analyzer1 = new Analyzer();
         analyzer1.setId("FIRST");
         analyzer1.setName("First Match");
-        analyzer1.setIdentifierPattern("MINDRAY");
+        analyzer1.setIdentifierPattern(".*");
 
         Analyzer analyzer2 = new Analyzer();
         analyzer2.setId("SECOND");
         analyzer2.setName("Second Match");
-        analyzer2.setIdentifierPattern("BA-88A");
+        analyzer2.setIdentifierPattern("^MINDRAY\\^BA-88A\\^1\\.0$");
 
         List<Analyzer> list = new ArrayList<>();
         list.add(analyzer1);
@@ -331,7 +331,7 @@ public class AnalyzerServiceStatusTest {
         Optional<Analyzer> result = analyzerServiceImpl.findByIdentifierPatternMatch("MINDRAY^BA-88A^1.0");
 
         assertTrue(result.isPresent());
-        assertEquals("FIRST", result.get().getId());
+        assertEquals("SECOND", result.get().getId());
     }
 
     @Test
